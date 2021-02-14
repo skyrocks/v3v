@@ -1,23 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <Frame></Frame>
 </template>
-
 <script setup>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import HelloWorld from './components/HelloWorld.vue'
-
-  // This starter template is using Vue 3 experimental <script setup> SFCs
-  // Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
+  import Frame from './layout/Index.vue'
 </script>
-
 <style>
+  body {
+    margin: 0;
+  }
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
+    margin: 0;
+    padding: 0;
+    height: 100%;
     color: #2c3e50;
-    margin-top: 60px;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
   }
 </style>
