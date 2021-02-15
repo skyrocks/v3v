@@ -11,12 +11,24 @@ const routes: any[] = [
   {
     path: '/design',
     name: 'design',
-    component: () => import('@/views/Design/index.vue')
+    component: () => import('@/views/Design/index.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/Design/Report.vue')
+      }
+    ]
   },
   {
     path: '/show',
     name: 'show',
-    component: () => import('@/views/Show/index.vue')
+    component: () => import('@/views/Show/index.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/Show/Report.vue')
+      }
+    ]
   }
 ]
 

@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header class="container">
-      <Header></Header>
+      <Header />
     </el-header>
     <div class="line"></div>
     <el-main class="container">

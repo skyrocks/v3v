@@ -1,5 +1,5 @@
 <template>
-  <Frame></Frame>
+  <Frame />
 </template>
 <script setup>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
