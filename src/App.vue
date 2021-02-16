@@ -1,7 +1,7 @@
 <template>
   <Frame />
 </template>
-<script setup>
+<script setup lang="ts">
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import Frame from './layout/Index.vue'
 </script>

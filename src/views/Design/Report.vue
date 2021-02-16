@@ -1,10 +1,10 @@
 <template>
   <el-row>
     <el-col :span="4">
-      <el-input v-model="currentCellName" readonly class="cell-name" @focus="cellInputFocus" @blur="cellInputBlur" />
+      <el-input v-model="currentCellName" readonly class="cell-name" />
     </el-col>
     <el-col :span="20">
-      <el-input v-model="currentCellData" @input="cellInput" @focus="cellInputFocus" @blur="cellInputBlur" />
+      <el-input v-model="currentCellData" @input="cellInput" />
     </el-col>
   </el-row>
   <el-table
@@ -20,12 +20,12 @@
       <template #default="{ row }">
         <el-input
           v-model="row[num2col(c)]"
-          @input="inputting(row, c)"
-          @focus="inputFocus(row, c)"
-          @blur="inputBlur(row, c)"
-          @dragover="(e) => e.preventDefault()"
-          @dragenter="dragEnter($event, row, c)"
-          @dragleave="dragLeave($event, row, c)"
+          :class="getCellClass(row, c)"
+          @input="setCurrentCell(c, row.index, row[num2col(c)])"
+          @focus="setCurrentCell(c, row.index, row[num2col(c)])"
+          @dragover="$event.preventDefault()"
+          @dragenter="$event.target.style.borderColor = cellBorderColor"
+          @dragleave="$event.target.style.borderColor = ''"
           @drop="drop($event, row, c)"
         ></el-input>
       </template>
@@ -33,7 +33,7 @@
   </el-table>
   <p>{{ inputData }} </p>
 </template>
-<script setup>
+<script setup lang="ts">
   import { ref, reactive, computed } from 'vue'
   import { num2col } from '@/utils/index.ts'
 
@@ -41,7 +41,7 @@
   const rows = ref(6)
   let inputData = reactive([])
   for (let r = 1; r <= rows.value; r++) {
-    let rowData = { index: r }
+    let rowData = { index: r, focus: false }
     for (let c = 1; c <= cols.value; c++) {
       rowData[num2col(c)] = r === 1 ? '=name' : ''
     }
@@ -54,7 +54,6 @@
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cssVars = computed(() => {
     return {
-      '--cellBgColor': cellBgColor,
       '--cellBorderColor': cellBorderColor
     }
   })
@@ -62,7 +61,6 @@
   const currentColIndex = ref(-1)
   const currentRowIndex = ref(-1)
   let currentCellData = ref('')
-  let currentCellCopy = { currentColIndex: -1, currentRowIndex: -1, currentCellData: '' }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const currentCellName = computed(() => {
@@ -70,66 +68,37 @@
       ? `${num2col(currentColIndex.value)}${currentRowIndex.value}`
       : ''
   })
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getCellClass = (row, c) => {
+    return row.index === currentRowIndex.value && c === currentColIndex.value ? 'cell-focus' : 'cell-blur'
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const headerCellStyle = (c) => {
+    return c.columnIndex === currentColIndex.value ? `background-color: ${cellBgColor}` : ''
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const rowStyle = (row) => {
+    return row.rowIndex + 1 === currentRowIndex.value ? `background-color: ${cellBgColor}` : ''
+  }
+
   const setCurrentCell = (cellIndex = -1, rowIndex = -1, cellData = '') => {
     currentColIndex.value = cellIndex
     currentRowIndex.value = rowIndex
     currentCellData.value = cellData
-    if (cellIndex !== -1 || rowIndex !== -1) {
-      currentCellCopy = { currentColIndex: cellIndex, currentRowIndex: rowIndex, currentCellData: cellData }
-    }
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const headerCellStyle = (c) => {
-    if (c.columnIndex === currentColIndex.value) {
-      return `background-color: ${cellBgColor}`
-    }
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const rowStyle = (row) => {
-    if (row.rowIndex + 1 === currentRowIndex.value) {
-      return `background-color: ${cellBgColor}`
-    }
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const cellInputFocus = () => {
-    setCurrentCell(currentCellCopy.currentColIndex, currentCellCopy.currentRowIndex, currentCellCopy.currentCellData)
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const cellInputBlur = () => {
-    setCurrentCell()
-  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cellInput = () => {
     inputData[currentRowIndex.value - 1][num2col(currentColIndex.value)] = currentCellData.value
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const inputting = (row, c) => {
-    setCurrentCell(c, row.index, row[num2col(c)])
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const inputFocus = (row, c) => {
-    setCurrentCell(c, row.index, row[num2col(c)])
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const inputBlur = () => {
-    setCurrentCell()
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dragEnter = (e, row, c) => {
-    setCurrentCell(c, row.index, row[num2col(c)])
-    e.target.style.borderColor = cellBorderColor
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dragLeave = (e, row, c) => {
-    e.target.style.borderColor = 'transparent'
-  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const drop = (e, row, c) => {
     const data = JSON.parse(e.dataTransfer.getData('field'))
     row[num2col(c)] = data.name
-    e.target.className = 'el-input__inner'
-    e.target.style.borderColor = 'transparent'
-    setCurrentCell()
+    setCurrentCell(c, row.index, data.name)
+    e.target.style.borderColor = ''
   }
 </script>
 
@@ -138,18 +107,25 @@
     text-align: center;
   }
 
+  ::v-deep(.el-table__header th:not(:first-child)) {
+    text-align: center;
+    cursor: s-resize;
+  }
+  ::v-deep(.el-table__header th:first-child) {
+    cursor: se-resize;
+  }
   ::v-deep(.el-table__body tr.hover-row > td) {
     background-color: transparent;
   }
-
   ::v-deep(.el-table__body .cell) {
     padding: 0 !important;
   }
   ::v-deep(.el-table__body td) {
     padding: 0 !important;
   }
-  ::v-deep(.el-table__header th) {
+  ::v-deep(.el-table__body tr > td:nth-child(1)) {
     text-align: center;
+    cursor: e-resize;
   }
   ::v-deep(.el-table__body td) {
     text-align: center;
@@ -159,9 +135,12 @@
     border-radius: 0;
   }
   ::v-deep(.el-table__body .el-input__inner) {
+    cursor: cell;
+  }
+  ::v-deep(.el-table__body .cell-blur .el-input__inner) {
     border-color: transparent;
   }
-  ::v-deep(.el-table__body .el-input__inner:focus) {
+  ::v-deep(.el-table__body .cell-focus .el-input__inner) {
     border-color: var(--cellBorderColor);
   }
 </style>

@@ -24,7 +24,7 @@
   </el-row>
 </template>
 
-<script setup>
+<script setup lang="ts">
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import imgLogo from '../assets/images/logo.png'
 </script>

@@ -8,6 +8,7 @@ export default defineComponent({
     //     <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
     //   </>
     // );
+    const a: any = ''
     return() => (
       <div>Dashboard</div>
     )

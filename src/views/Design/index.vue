@@ -9,7 +9,7 @@
     </el-main>
   </el-container>
 </template>
-<script setup>
+<script setup lang="ts">
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import Menu from './Menu.vue'
 </script>
