@@ -5,7 +5,7 @@
     </el-col>
     <el-col :span="9"></el-col>
     <el-col :span="3">
-      <el-input v-model="searchText" placeholder="搜索报表" style="line-height: 60px"></el-input>
+      <el-input placeholder="搜索报表" style="line-height: 60px"></el-input>
     </el-col>
     <el-col :span="4">
       <el-menu text-color="#1989fa" active-text-color="#1989fa" mode="horizontal" router>

@@ -11,7 +11,7 @@
 </template>
 <script setup>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import Header from '../components/Header.vue'
+  import Header from './Header.vue'
 </script>
 
 <style lang="scss" scoped>
