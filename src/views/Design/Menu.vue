@@ -15,14 +15,14 @@
     </el-menu-item>
   </el-menu>
   <p></p>
-  <p v-for="(item, index) in list1" :key="index" draggable="true" @dragstart="dragStart($event, item)" class="pdrag">
+  <p v-for="(item, index) in list1" :key="index" draggable="true" @dragstart="dragStart($event, item)">
     {{ item.name }}
   </p>
-  <el-input @dragover="dragover" @drop="drop" />
 </template>
 <script setup lang="ts">
   import { reactive } from 'vue'
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const list1 = reactive([
     { name: '姓名', id: 'name' },
     { name: '学号', id: 'code' },
@@ -31,16 +31,9 @@
     { name: '班级', id: 'classInfo' },
     { name: '年龄', id: 'age' }
   ])
-  const list2 = reactive([{ name: '年龄2', id: 'age2' }])
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dragStart = (e, item) => {
     e.dataTransfer.setData('field', JSON.stringify(item))
-  }
-
-  const dragover = (e) => {
-    e.preventDefault()
-  }
-  const drop = () => {
-    console.log('放')
   }
 </script>
