@@ -16,17 +16,18 @@
     :row-style="rowStyle"
   >
     <el-table-column type="index" fixed style="background-color: rgb(25, 137, 250, 0.2)"></el-table-column>
+    <!-- v-for="c in cols" c 从 1 开始 -->
     <el-table-column v-for="c in cols" :key="c" :label="num2col(c)" :prop="num2col(c)" width="100">
-      <template #default="{ row }">
+      <template #default="{ row, column, $index }">
         <el-input
-          v-model="row[num2col(c)]"
-          :class="getCellClass(row, c)"
-          @input="setCurrentCell(c, row.index, row[num2col(c)])"
-          @focus="setCurrentCell(c, row.index, row[num2col(c)])"
+          v-model="row[column.property]"
+          :class="getCellClass(c, $index + 1)"
+          @input="setCurrentCell(c, $index + 1, row[column.property])"
+          @focus="setCurrentCell(c, $index + 1, row[column.property])"
           @dragover="$event.preventDefault()"
           @dragenter="$event.target.style.borderColor = cellBorderColor"
           @dragleave="$event.target.style.borderColor = ''"
-          @drop="drop($event, row, c)"
+          @drop="drop($event, row, column.property, c, $index)"
         ></el-input>
       </template>
     </el-table-column>
@@ -34,72 +35,42 @@
   <p>{{ inputData }} </p>
 </template>
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue'
+  import { ref, reactive } from 'vue'
   import { num2col } from '@/utils/index.ts'
+  import reportControl from './report.ts'
 
+  // 初始table的行数列数
   const cols = ref(10)
   const rows = ref(6)
-  let inputData = reactive([])
+  const inputData = reactive<RowData[]>([])
   for (let r = 1; r <= rows.value; r++) {
-    let rowData = { index: r, focus: false }
+    const rowData: RowData = {}
     for (let c = 1; c <= cols.value; c++) {
-      rowData[num2col(c)] = r === 1 ? '=name' : ''
+      rowData[num2col(c)] = ''
     }
     inputData.push(rowData)
   }
 
-  // 编辑Cell背景色及边框色
-  const cellBgColor = 'rgba(25, 137, 250, 0.1)'
-  const cellBorderColor = 'rgba(25, 137, 250, 0.7)'
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const cssVars = computed(() => {
-    return {
-      '--cellBorderColor': cellBorderColor
-    }
-  })
-
-  const currentColIndex = ref(-1)
-  const currentRowIndex = ref(-1)
-  let currentCellData = ref('')
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const currentCellName = computed(() => {
-    return currentRowIndex.value !== -1 && currentColIndex.value !== -1
-      ? `${num2col(currentColIndex.value)}${currentRowIndex.value}`
-      : ''
-  })
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getCellClass = (row, c) => {
-    return row.index === currentRowIndex.value && c === currentColIndex.value ? 'cell-focus' : 'cell-blur'
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const headerCellStyle = (c) => {
-    return c.columnIndex === currentColIndex.value ? `background-color: ${cellBgColor}` : ''
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const rowStyle = (row) => {
-    return row.rowIndex + 1 === currentRowIndex.value ? `background-color: ${cellBgColor}` : ''
-  }
-
-  const setCurrentCell = (cellIndex = -1, rowIndex = -1, cellData = '') => {
-    currentColIndex.value = cellIndex
-    currentRowIndex.value = rowIndex
-    currentCellData.value = cellData
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const cellInput = () => {
-    inputData[currentRowIndex.value - 1][num2col(currentColIndex.value)] = currentCellData.value
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const drop = (e, row, c) => {
-    const data = JSON.parse(e.dataTransfer.getData('field'))
-    row[num2col(c)] = data.name
-    setCurrentCell(c, row.index, data.name)
-    e.target.style.borderColor = ''
-  }
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    cssVars,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    currentCellName,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    currentCellData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getCellClass,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    headerCellStyle,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    rowStyle,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setCurrentCell,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    drop,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    cellInput
+  } = reportControl(cols, rows, inputData)
 </script>
 
 <style lang="scss" scoped>
