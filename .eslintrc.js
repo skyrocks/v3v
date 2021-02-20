@@ -1,4 +1,10 @@
 module.exports = {
+  root: true,
+  env: {
+    browser: true,
+    node: true,
+    es6: true
+  },
   parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
@@ -7,6 +13,9 @@ module.exports = {
     ecmaFeatures: {
       jsx: true
     }
+  },
+  globals: {
+    process: true
   },
   extends: [
     'plugin:vue/vue3-recommended',

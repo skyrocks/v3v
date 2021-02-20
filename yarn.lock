@@ -1791,10 +1791,10 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.2.0.tgz#9471efa3ef9128d2f7c6a7ca39c4dd6b5055b132"
   integrity sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
 
-vite-plugin-imp@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/vite-plugin-imp/-/vite-plugin-imp-2.0.3.tgz#442e5142660379d2e82c88b8688c27496d2651c1"
-  integrity sha512-MD3n3TPZOU7Ep8F908XypQiPTSlYLQPW842SWBz03h8KUhXKs2C3Jj9PKFOe0Qpj/uVYv87iG6LAvqeQo2QEtQ==
+vite-plugin-imp@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/vite-plugin-imp/-/vite-plugin-imp-2.0.4.tgz#bc64aee21168d554ad99d235a805c7fb89578720"
+  integrity sha512-znKZwIx60zihQzup/u00144hvnG8oGOUPWArlpYcBn9hE+lY1jzjpy1+UURvn0lYTNp9ydF0JOmQQXA6oKbohg==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/generator" "^7.12.11"
@@ -1803,10 +1803,10 @@ vite-plugin-imp@^2.0.3:
     chalk "^4.1.0"
     param-case "^3.0.4"
 
-vite@^2.0.0-beta.65:
-  version "2.0.0-beta.66"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-2.0.0-beta.66.tgz#f9fbb3490bb235efd73366d8d0974f3e7a3e3d54"
-  integrity sha512-tUn708PIWHCrj83t09OAiJ2YU5EJGz5VOSivKTPq+s5I48rN4B2B3ZTRpg4n8WMw2ZQLWnrQOXWfqXoMBEJd9g==
+vite@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-2.0.1.tgz#348fc5c0de510aa90bd01ecf87df210ce741b38e"
+  integrity sha512-x7ZfikjNs+6n4cdvwb9L5r5xBCdjmtmHFHaI4JVR3nAkJbMCK/dynfDWky8/NseZ9Ncz1jVxTQ/Bcf+n1ps1Ww==
   dependencies:
     esbuild "^0.8.34"
     postcss "^8.2.1"

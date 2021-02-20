@@ -8,15 +8,17 @@
 //   plugins: [vue()]
 // }
 
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vitePluginImp from 'vite-plugin-imp'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 const path = require('path')
-console.log(path.resolve(__dirname, './src'))
 
-export default defineConfig({
+const env = loadEnv(process.env.NODE_ENV, process.cwd())
+console.log(env)
+
+const config = {
   base: './',
   plugins: [
     vue(),
@@ -37,7 +39,11 @@ export default defineConfig({
   server: {
     port: 3008
   },
-  alias: {
-    '@': path.resolve(__dirname, './src')
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
   }
-})
+}
+
+export default defineConfig(config)

@@ -1,16 +1,37 @@
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import { authApi } from '@/api/modules/auth'
+import { userApi } from '@/api/modules/user'
+import { cookie } from '@/utils/storage/cookie';
 
 export default defineComponent({
   setup() {
-    // return () => (
-    //   <>
-    //     <h1>msg</h1>
-    //     <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
-    //   </>
-    // );
-    const a: any = ''
+
+    const users = ref('aa')
+    const loginResponse = ref('222')
+
+    const getUser = () => {
+      userApi.getUser({}).then((response) => {
+        users.value = JSON.stringify(response.data)
+      })
+    }
+    
+    const login = () => {      
+      authApi.login({loginName: 'devtest', password: '1'}).then((response) => {
+        console.log(response)        
+        loginResponse.value = response.data
+        cookie.set('token', `Bearer ${loginResponse.value}`)
+      })
+    }
+
     return() => (
-      <div>Dashboard</div>
+      <div>
+        <el-row>
+          <el-button type="primary" onClick={ login }>登录</el-button>
+          <el-button type="success" onClick={ getUser }>获取用户数据</el-button>
+        </el-row>
+        <p>{ loginResponse.value }</p>
+        <p>{ users.value }</p>
+      </div>
     )
   }  
 })

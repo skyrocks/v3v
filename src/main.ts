@@ -56,4 +56,7 @@ plugins.forEach((plugin: any) => {
 })
 
 app.use(router)
+
+app.config.globalProperties.$message = ElMessage
+
 app.mount('#app')
