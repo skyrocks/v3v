@@ -1,4 +1,5 @@
 <template>
+  <Group></Group>
   <el-container>
     <el-aside>
       <p>Design</p>
@@ -12,4 +13,6 @@
 <script setup lang="ts">
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import Menu from './Menu.vue'
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  import Group from './Group.tsx'
 </script>

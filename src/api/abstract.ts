@@ -20,6 +20,9 @@ class Abstract {
     params,
     responseType
   }: AxiosRequest): Promise<CustomResponse> {
+    // if (url.indexOf('/api') === -1) {
+    //   url = `/api${url}`
+    // }
     Object.assign(headers, {
       Authorization: cookie.get('token')
     })

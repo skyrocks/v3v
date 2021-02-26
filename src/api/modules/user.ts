@@ -2,7 +2,7 @@ import Abstract from '../abstract'
 
 class User extends Abstract {
   getUser(params: {}) {
-    return this.get({ url: '/api/users/0/5', params })
+    return this.get({ url: '/users/0/5', params })
   }
 }
 

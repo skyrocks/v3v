@@ -19,7 +19,7 @@ const env = loadEnv(process.env.NODE_ENV, process.cwd())
 console.log(env)
 
 const config = {
-  base: './',
+  // base: './',
   plugins: [
     vue(),
     vitePluginImp({
@@ -36,12 +36,29 @@ const config = {
       // options are passed on to @vue/babel-plugin-jsx
     })
   ],
-  server: {
-    port: 3008
+  css: {
+    modules: true,
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@import "@/styles/index.scss";'
+      }
+    }
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
+    }
+  },
+  server: {
+    port: 3008,
+    proxy: {
+      '/api': {
+        changeOrigin: true,
+        rewrite: (path) => {
+          console.log(path)
+          return path.replace(/^\/api/, '')
+        }
+      }
     }
   }
 }

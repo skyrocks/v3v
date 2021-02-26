@@ -2,7 +2,7 @@ import Abstract from '../abstract'
 
 class Auth extends Abstract {
   login(data: {}) {
-    return this.post({ url: '/api/auth/login', data })
+    return this.post({ url: '/auth/login', data })
   }
 }
 
