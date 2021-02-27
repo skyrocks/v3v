@@ -126,13 +126,13 @@
   .tbar {
     padding: 6px;
     button {
-      border: 0;
+      border: 1px solid transparent;
       background-color: transparent;
       &:hover,
       &:focus {
-        border: 1px;
-        background-color: #ccc;
-        color: #fff;
+        border: 1px solid $--color-bg-link;
+        //background-color: $--color-bg-link;
+        // color: $--color-bg-enabled;
       }
     }
   }

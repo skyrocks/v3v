@@ -8,7 +8,7 @@
       <el-input placeholder="搜索报表" style="line-height: 60px"></el-input>
     </el-col>
     <el-col :span="4">
-      <el-menu text-color="#1989fa" active-text-color="#1989fa" mode="horizontal" router>
+      <el-menu text-color="#409eff" active-text-color="#409eff" mode="horizontal" router>
         <el-menu-item index="/design" class="menu"> 设计 </el-menu-item>
         <el-menu-item index="/show" class="menu"> 浏览 </el-menu-item>
       </el-menu>
@@ -34,9 +34,9 @@
   }
   .menu {
     text-decoration: none;
-    color: #1989fa;
-    opacity: 0.5;
-    font-size: 16px;
+    color: $--color-text-link;
+    opacity: 0.7;
+    font-size: $--size-font-larger;
     &.is-active {
       opacity: 1;
     }

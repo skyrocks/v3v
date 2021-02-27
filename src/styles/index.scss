@@ -12,10 +12,10 @@
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  color: #2c3e50;
+  text-rendering: optimizeLegibility;  
+  color: $--color-text-base;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-  font-size: 1.4rem;
+  font-size: $--size-font-base;
   font-weight: 400;  
 }
 

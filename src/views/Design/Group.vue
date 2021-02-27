@@ -56,7 +56,7 @@
 </script>
 <style lang="scss" scoped>
   .opened-submenu {
-    color: #409eff;
+    color: $--color-text-link;
   }
   .menu-wrap {
     margin-top: 6px;
@@ -73,11 +73,16 @@
     border-right: 0 !important;
   }
   ::v-deep(.el-menu-item) {
-    height: 22px !important;
-    line-height: 22px !important;
+    height: 28px !important;
+    line-height: 28px !important;
+    color: $--color-text-base;
+    &.is-active {
+      color: $--color-text-link;
+    }
   }
   ::v-deep(.el-submenu__title) {
-    height: 26px !important;
-    line-height: 26px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    color: $--color-text-base;
   }
 </style>

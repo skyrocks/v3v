@@ -40,7 +40,7 @@ const config = {
     modules: true,
     preprocessorOptions: {
       scss: {
-        additionalData: '@import "@/styles/index.scss";'
+        additionalData: '@import "@/styles/variables.scss"; @import "@/styles/index.scss";'
       }
     }
   },

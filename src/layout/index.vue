@@ -17,6 +17,6 @@
 <style lang="scss" scoped>
   .line {
     height: 1px;
-    background-color: #e0e6ed;
+    background-color: $--color-line-split;
   }
 </style>

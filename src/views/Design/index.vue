@@ -28,10 +28,10 @@
 </script>
 <style lang="scss" scoped>
   ::v-deep(.splitpanes__splitter) {
-    background-color: #efefef !important;
+    background-color: $--color-lineWeight-split !important;
   }
   .group-wrap {
-    background-color: #fff !important;
+    background-color: $--color-bg-enabled !important;
     padding-top: 13px;
     padding-right: 15px;
   }
