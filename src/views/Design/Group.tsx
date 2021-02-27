@@ -1,8 +1,8 @@
 import { defineComponent, onMounted, reactive } from 'vue';
 import { reportApi } from '@/api/modules/report'
-import './group.scss'
+// import './group.scss'
 
-interface ReportType{
+export interface ReportType{
   reportId: string
   reportName: string
   groupId: string
@@ -10,12 +10,12 @@ interface ReportType{
   memo: string
 }
 
-interface ReportGroupType{
+export interface ReportGroupType{
   groupId: string
   groupName: string
   seq: number
   memo: string
-  reports?: ReportType[]
+  reports: ReportType[]
 }
 
 export default defineComponent({
@@ -32,34 +32,61 @@ export default defineComponent({
       })
     }
 
-    const toggleGroupStatus = (item:ReportGroupType, e: any) => {
-      status.open[item.groupId] = !status.open[item.groupId]
-    }
+    // const toggleGroupStatus = (item:ReportGroupType, e: any) => {
+    //   status.open[item.groupId] = !status.open[item.groupId]
+    // }
 
     onMounted(getGroups)
 
     return() => (
-      <div><ul class="style-list">
+      <el-menu>
       {
         status.groups.map( (g) => {
           return (
-            <li class="item" onClick={ toggleGroupStatus.bind(this, g) }>
-              <span class={status.open[g.groupId] ? 'open': ''}>
-                <i class={status.open[g.groupId] ? "el-icon-folder-opened": "el-icon-folder"}></i> 
-                { g.groupName }
-              </span>
-              <ul class={`style-list children ${status.open[g.groupId] ? '': 'hidden'}`}>
-                {
-                  g.reports?.map( (r) => {
-                    return <li class="item"> { r.reportName }</li>
-                  })
-                }
-              </ul>
-            </li>
+            <el-submenu>
+              <i class="el-icon-menu"></i> 
+              {g.groupName}
+              {
+                g.reports.map ( (r) => {
+                  return (
+                    <el-menu-item>
+                      <i class="el-icon-menu"></i>
+                      { r.reportName }
+                    </el-menu-item>
+                  )
+                })
+              } 
+            </el-submenu>
           )
         })
       }
-    </ul></div>
+      </el-menu>
     )
+
+    
+
+    // return() => (
+    //   <div><ul class="style-list">
+    //   {
+    //     status.groups.map( (g) => {
+    //       return (
+    //         <li class="item" onClick={ toggleGroupStatus.bind(this, g) }>
+    //           <span class={status.open[g.groupId] ? 'open': ''}>
+    //             <i class={status.open[g.groupId] ? "el-icon-folder-opened": "el-icon-folder"}></i> 
+    //             { g.groupName }
+    //           </span>
+    //           <ul class={`style-list children ${status.open[g.groupId] ? '': 'hidden'}`}>
+    //             {
+    //               g.reports?.map( (r) => {
+    //                 return <li class="item"> { r.reportName }</li>
+    //               })
+    //             }
+    //           </ul>
+    //         </li>
+    //       )
+    //     })
+    //   }
+    // </ul></div>
+    // )
   }  
 })

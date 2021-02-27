@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="20">
+  <el-row>
     <el-col :span="6">
       <el-image style="margin-top: 8px; width: 160px" :src="imgLogo" fit="cover"></el-image>
     </el-col>
@@ -29,6 +29,9 @@
   import imgLogo from '../assets/images/logo.png'
 </script>
 <style lang="scss" scoped>
+  ::v-deep(.el-menu) {
+    border: 0;
+  }
   .menu {
     text-decoration: none;
     color: #1989fa;

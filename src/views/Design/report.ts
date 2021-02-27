@@ -26,7 +26,7 @@ interface Result {
   cellInput: () => void
 }
 
-export default function reportControl(cols: Ref<number>, rows: Ref<number>, inputData: UnwrapRef<RowData[]>): Result {
+export default function reportControl(inputData: UnwrapRef<RowData[]>): Result {
   // 初始化当前单元格
   const currentCell = reactive<CurrentCell>({
     rowIndex: -1,

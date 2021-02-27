@@ -6,6 +6,7 @@ import {
   ElMessage,
   ElMessageBox,
   ElNotification,
+  ElButtonGroup,
   ElButton,
   ElRow,
   ElCol,
@@ -14,16 +15,21 @@ import {
   ElHeader,
   ElMain,
   ElMenu,
+  ElSubmenu,
   ElMenuItem,
   ElImage,
   ElInput,
   ElAvatar,
   ElIcon,
   ElTable,
-  ElTableColumn
+  ElTableColumn,
+  ElDivider
+  // ElTabs,
+  // ElTabPane
 } from 'element-plus'
 
 const components: any[] = [
+  ElButtonGroup,
   ElButton,
   ElRow,
   ElCol,
@@ -32,13 +38,17 @@ const components: any[] = [
   ElHeader,
   ElMain,
   ElMenu,
+  ElSubmenu,
   ElMenuItem,
   ElImage,
   ElInput,
   ElAvatar,
   ElIcon,
   ElTable,
-  ElTableColumn
+  ElTableColumn,
+  ElDivider
+  // ElTabs,
+  // ElTabPane
 ]
 
 const plugins: any = [ElLoading, ElMessage, ElMessageBox, ElNotification]

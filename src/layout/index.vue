@@ -1,10 +1,10 @@
 <template>
   <el-container>
-    <el-header class="container">
+    <el-header style="padding: 0 40px">
       <Header />
     </el-header>
     <div class="line"></div>
-    <el-main class="container">
+    <el-main style="padding: 0 0 0 40px">
       <router-view />
     </el-main>
   </el-container>
@@ -15,9 +15,6 @@
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    padding: 0 45px;
-  }
   .line {
     height: 1px;
     background-color: #e0e6ed;

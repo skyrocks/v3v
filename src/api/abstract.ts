@@ -1,7 +1,7 @@
 import { getCurrentInstance } from 'vue'
 import { API_DOMAIN } from '@/utils/env'
 import { AxiosRequest, CustomResponse } from './types'
-import { cookie } from '@/utils/storage/cookie'
+import { localStore } from '@/utils/storage/localStorage'
 import instance from './intercept'
 
 class Abstract {
@@ -24,7 +24,7 @@ class Abstract {
     //   url = `/api${url}`
     // }
     Object.assign(headers, {
-      Authorization: cookie.get('token')
+      Authorization: `Bearer ${localStore.get('token')}`
     })
     return new Promise((resolve, reject) => {
       instance({ baseURL, headers, method, url, params, data, responseType })

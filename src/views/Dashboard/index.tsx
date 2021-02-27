@@ -1,7 +1,7 @@
 import { defineComponent, ref } from 'vue';
 import { authApi } from '@/api/modules/auth'
 import { userApi } from '@/api/modules/user'
-import { cookie } from '@/utils/storage/cookie';
+import { localStore } from '@/utils/storage/localStorage'
 
 export default defineComponent({
   setup() {
@@ -19,7 +19,7 @@ export default defineComponent({
       authApi.login({loginName: 'devtest', password: '1'}).then((response) => {
         console.log(response)        
         loginResponse.value = response.data
-        cookie.set('token', `Bearer ${loginResponse.value}`)
+        localStore.set('token', loginResponse.value)
       })
     }
 
