@@ -4,7 +4,7 @@
       <Header />
     </el-header>
     <div class="line"></div>
-    <el-main style="padding: 0 0 0 40px">
+    <el-main style="padding: 0">
       <router-view />
     </el-main>
   </el-container>

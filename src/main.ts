@@ -23,9 +23,11 @@ import {
   ElIcon,
   ElTable,
   ElTableColumn,
-  ElDivider
-  // ElTabs,
-  // ElTabPane
+  ElDivider,
+  ElRadioGroup,
+  ElRadio,
+  ElTabs,
+  ElTabPane
 } from 'element-plus'
 
 const components: any[] = [
@@ -46,9 +48,11 @@ const components: any[] = [
   ElIcon,
   ElTable,
   ElTableColumn,
-  ElDivider
-  // ElTabs,
-  // ElTabPane
+  ElDivider,
+  ElRadioGroup,
+  ElRadio,
+  ElTabs,
+  ElTabPane
 ]
 
 const plugins: any = [ElLoading, ElMessage, ElMessageBox, ElNotification]

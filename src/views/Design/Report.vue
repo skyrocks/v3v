@@ -1,6 +1,6 @@
 <template>
   <Splitpanes class="default-theme" :style="`height: ${editAreaHeight}`">
-    <Pane size="80">
+    <Pane size="75">
       <div class="tbar">
         <el-button size="small" icon="el-icon-goods">保存</el-button>
         <el-button size="small" icon="el-icon-eleme">预览</el-button>
@@ -63,7 +63,7 @@
   export default defineComponent({
     components: { ReportBottom, ReportRight, Splitpanes, Pane },
     setup() {
-      const bottomAreaHeight = 200
+      const bottomAreaHeight = 170
       const editAreaHeight = computed(() => {
         return `${getContextHeight()}px`
       })
@@ -126,13 +126,15 @@
   .tbar {
     padding: 6px;
     button {
+      font-size: $--size-font-base;
       border: 1px solid transparent;
       background-color: transparent;
       &:hover,
       &:focus {
         border: 1px solid $--color-bg-link;
-        //background-color: $--color-bg-link;
-        // color: $--color-bg-enabled;
+      }
+      i {
+        font-size: $--size-font-larger !important;
       }
     }
   }
