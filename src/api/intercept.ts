@@ -40,7 +40,7 @@ const instance = axios.create({
 let loading: any
 // 添加请求拦截器
 instance.interceptors.request.use(
-  (request) => {
+  request => {
     loading = ElLoading.service({
       text: '加载中',
       background: 'rgba(0, 0, 0, 0.3)'
@@ -48,27 +48,27 @@ instance.interceptors.request.use(
 
     removePending(request)
 
-    request.cancelToken = new axios.CancelToken((c) => {
+    request.cancelToken = new axios.CancelToken(c => {
       pending.push({ url: request.url, method: request.method, params: request.params, data: request.data, cancel: c })
     })
 
     return request
   },
-  (error) => {
+  error => {
     return Promise.reject(error)
   }
 )
 
 // 添加响应拦截器
 instance.interceptors.response.use(
-  (response) => {
+  response => {
     loading.close()
 
     removePending(response.config)
 
     return response
   },
-  (error) => {
+  error => {
     loading.close()
 
     const response = error.response
@@ -112,7 +112,7 @@ instance.interceptors.response.use(
       // 增加重试计数
       config.__retryCount++
       // 创造新的Promise来处理指数后退
-      const backOff = new Promise<void>((resolve) => {
+      const backOff = new Promise<void>(resolve => {
         setTimeout(() => {
           resolve()
         }, RETRY_DELAY || 1)

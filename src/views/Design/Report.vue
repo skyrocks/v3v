@@ -53,128 +53,128 @@
   </Splitpanes>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive, computed } from 'vue'
-  import { num2col, getContextHeight } from '@/utils/index.ts'
-  import { Splitpanes, Pane } from 'splitpanes'
-  import 'splitpanes/dist/splitpanes.css'
-  import ReportBottom from './ReportBottom.vue'
-  import ReportRight from './ReportRight.vue'
-  import reportControl, { RowData } from './report.ts'
-  export default defineComponent({
-    components: { ReportBottom, ReportRight, Splitpanes, Pane },
-    setup() {
-      const bottomAreaHeight = 170
-      const editAreaHeight = computed(() => {
-        return `${getContextHeight()}px`
-      })
-      const tableHeight = computed(() => {
-        return `${getContextHeight() - bottomAreaHeight}px`
-      })
-      // 初始table的行数列数
-      const status = reactive<{
-        data: RowData[]
-        cols: number
-        rows: number
-      }>({
-        data: [],
-        cols: 10,
-        rows: 6
-      })
+import { defineComponent, reactive, computed } from 'vue'
+import { num2col, getContextHeight } from '@/utils/index.ts'
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
+import ReportBottom from './ReportBottom.vue'
+import ReportRight from './ReportRight.vue'
+import reportControl, { RowData } from './report.ts'
+export default defineComponent({
+  components: { ReportBottom, ReportRight, Splitpanes, Pane },
+  setup() {
+    const bottomAreaHeight = 170
+    const editAreaHeight = computed(() => {
+      return `${getContextHeight()}px`
+    })
+    const tableHeight = computed(() => {
+      return `${getContextHeight() - bottomAreaHeight}px`
+    })
+    // 初始table的行数列数
+    const status = reactive<{
+      data: RowData[]
+      cols: number
+      rows: number
+    }>({
+      data: [],
+      cols: 10,
+      rows: 6
+    })
 
-      for (let r = 1; r <= status.rows; r++) {
-        const rowData: RowData = {}
-        for (let c = 1; c <= status.cols; c++) {
-          rowData[num2col(c)] = ''
-        }
-        status.data.push(rowData)
+    for (let r = 1; r <= status.rows; r++) {
+      const rowData: RowData = {}
+      for (let c = 1; c <= status.cols; c++) {
+        rowData[num2col(c)] = ''
       }
-
-      const {
-        cssVars,
-        currentCellName,
-        currentCellData,
-        getCellClass,
-        headerCellStyle,
-        rowStyle,
-        setCurrentCell,
-        drop,
-        cellInput
-      } = reportControl(status.data)
-
-      return {
-        num2col,
-        editAreaHeight,
-        tableHeight,
-        bottomAreaHeight,
-        status,
-
-        cssVars,
-        currentCellName,
-        currentCellData,
-        getCellClass,
-        headerCellStyle,
-        rowStyle,
-        setCurrentCell,
-        drop,
-        cellInput
-      }
+      status.data.push(rowData)
     }
-  })
+
+    const {
+      cssVars,
+      currentCellName,
+      currentCellData,
+      getCellClass,
+      headerCellStyle,
+      rowStyle,
+      setCurrentCell,
+      drop,
+      cellInput
+    } = reportControl(status.data)
+
+    return {
+      num2col,
+      editAreaHeight,
+      tableHeight,
+      bottomAreaHeight,
+      status,
+
+      cssVars,
+      currentCellName,
+      currentCellData,
+      getCellClass,
+      headerCellStyle,
+      rowStyle,
+      setCurrentCell,
+      drop,
+      cellInput
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
-  .tbar {
-    padding: 6px;
-    button {
-      font-size: $--size-font-base;
-      border: 1px solid transparent;
-      background-color: transparent;
-      &:hover,
-      &:focus {
-        border: 1px solid $--color-bg-link;
-      }
-      i {
-        font-size: $--size-font-larger !important;
-      }
+.tbar {
+  padding: 6px;
+  button {
+    font-size: $--size-font-base;
+    border: 1px solid transparent;
+    background-color: transparent;
+    &:hover,
+    &:focus {
+      border: 1px solid $--color-bg-link;
+    }
+    i {
+      font-size: $--size-font-larger !important;
     }
   }
-  ::v-deep(.cell-name input) {
-    text-align: center;
-  }
-  ::v-deep(.el-table__header th:not(:first-child)) {
-    text-align: center;
-    cursor: s-resize;
-  }
-  ::v-deep(.el-table__header th:first-child) {
-    cursor: se-resize;
-  }
-  ::v-deep(.el-table__body tr.hover-row > td) {
-    background-color: transparent;
-  }
-  ::v-deep(.el-table__body .cell) {
-    padding: 0 !important;
-  }
-  ::v-deep(.el-table__body td) {
-    padding: 0 !important;
-  }
-  ::v-deep(.el-table__body tr > td:nth-child(1)) {
-    text-align: center;
-    cursor: e-resize;
-  }
-  ::v-deep(.el-table__body td) {
-    text-align: center;
-  }
+}
+::v-deep(.cell-name input) {
+  text-align: center;
+}
+::v-deep(.el-table__header th:not(:first-child)) {
+  text-align: center;
+  cursor: s-resize;
+}
+::v-deep(.el-table__header th:first-child) {
+  cursor: se-resize;
+}
+::v-deep(.el-table__body tr.hover-row > td) {
+  background-color: transparent;
+}
+::v-deep(.el-table__body .cell) {
+  padding: 0 !important;
+}
+::v-deep(.el-table__body td) {
+  padding: 0 !important;
+}
+::v-deep(.el-table__body tr > td:nth-child(1)) {
+  text-align: center;
+  cursor: e-resize;
+}
+::v-deep(.el-table__body td) {
+  text-align: center;
+}
 
-  ::v-deep(.el-input__inner) {
-    border-radius: 0;
-  }
-  ::v-deep(.el-table__body .el-input__inner) {
-    cursor: cell;
-  }
-  ::v-deep(.el-table__body .cell-blur .el-input__inner) {
-    border-color: transparent;
-  }
-  ::v-deep(.el-table__body .cell-focus .el-input__inner) {
-    border-color: var(--cellBorderColor);
-  }
+::v-deep(.el-input__inner) {
+  border-radius: 0;
+}
+::v-deep(.el-table__body .el-input__inner) {
+  cursor: cell;
+}
+::v-deep(.el-table__body .cell-blur .el-input__inner) {
+  border-color: transparent;
+}
+::v-deep(.el-table__body .cell-focus .el-input__inner) {
+  border-color: var(--cellBorderColor);
+}
 </style>

@@ -10,13 +10,13 @@
   </el-container>
 </template>
 <script setup lang="ts">
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import Header from './Header.vue'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import Header from './Header.vue'
 </script>
 
 <style lang="scss" scoped>
-  .line {
-    height: 1px;
-    background-color: $--color-line-split;
-  }
+.line {
+  height: 1px;
+  background-color: $--color-line-split;
+}
 </style>

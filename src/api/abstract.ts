@@ -28,7 +28,7 @@ class Abstract {
     })
     return new Promise((resolve, reject) => {
       instance({ baseURL, headers, method, url, params, data, responseType })
-        .then((res) => {
+        .then(res => {
           if (res.status === 200) {
             if (res.data.success) {
               resolve({ status: true, message: 'success', data: res.data?.data, origin: res.data })
@@ -45,7 +45,7 @@ class Abstract {
             resolve({ status: false, message: res.data?.errorMessage || url + '请求失败', data: null })
           }
         })
-        .catch((err) => {
+        .catch(err => {
           const message = err?.data?.errorMessage || err?.message || url + '请求失败'
           this.$message()({ message })
           reject({ status: false, message, data: null })

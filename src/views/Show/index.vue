@@ -10,6 +10,6 @@
   </el-container>
 </template>
 <script setup lang="ts">
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import Menu from './Menu.vue'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import Menu from './Menu.vue'
 </script>

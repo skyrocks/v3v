@@ -21,32 +21,32 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive } from 'vue'
 
-  export default defineComponent({
-    setup() {
-      const status = reactive<{
-        type: string
-        direction: string
-      }>({ type: '1', direction: 'none' })
+export default defineComponent({
+  setup() {
+    const status = reactive<{
+      type: string
+      direction: string
+    }>({ type: '1', direction: 'none' })
 
-      const handleChangeType = (val) => {
-        if (val === '1') {
-          status.direction = 'none'
-        }
+    const handleChangeType = val => {
+      if (val === '1') {
+        status.direction = 'none'
       }
-      return { status, handleChangeType }
     }
-  })
+    return { status, handleChangeType }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
-  .wrap {
-    padding: 10px;
-    margin: 0;
-    list-style-type: none;
-    li {
-      padding: 6px;
-    }
+.wrap {
+  padding: 10px;
+  margin: 0;
+  list-style-type: none;
+  li {
+    padding: 6px;
   }
+}
 </style>

@@ -25,41 +25,41 @@
 </template>
 
 <script setup lang="ts">
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import imgLogo from '../assets/images/logo.png'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import imgLogo from '../assets/images/logo.png'
 </script>
 <style lang="scss" scoped>
-  ::v-deep(.el-menu) {
-    border: 0;
+::v-deep(.el-menu) {
+  border: 0;
+}
+.menu {
+  text-decoration: none;
+  color: $--color-text-link;
+  opacity: 0.7;
+  font-size: $--size-font-larger;
+  &.is-active {
+    opacity: 1;
   }
-  .menu {
-    text-decoration: none;
-    color: $--color-text-link;
-    opacity: 0.7;
-    font-size: $--size-font-larger;
-    &.is-active {
-      opacity: 1;
-    }
-    &:hover {
-      opacity: 1;
-    }
+  &:hover {
+    opacity: 1;
   }
-  .me-wrap {
-    height: 60px;
-    display: table-cell;
-    vertical-align: middle;
+}
+.me-wrap {
+  height: 60px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  .icon {
+    width: 20px;
+    line-height: 60px;
+    display: inline-block;
+    box-sizing: border-box;
     text-align: center;
-    .icon {
-      width: 20px;
-      line-height: 60px;
-      display: inline-block;
-      box-sizing: border-box;
-      text-align: center;
-      opacity: 0.5;
-      &:hover,
-      &:focus {
-        opacity: 1;
-      }
+    opacity: 0.5;
+    &:hover,
+    &:focus {
+      opacity: 1;
     }
   }
+}
 </style>

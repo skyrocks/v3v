@@ -20,20 +20,20 @@
   </p>
 </template>
 <script setup lang="ts">
-  import { reactive } from 'vue'
+import { reactive } from 'vue'
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const list1 = reactive([
-    { name: '姓名', id: 'name' },
-    { name: '学号', id: 'code' },
-    { name: '年纪', id: 'grade' },
-    { name: '专业', id: 'profession' },
-    { name: '班级', id: 'classInfo' },
-    { name: '年龄', id: 'age' }
-  ])
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const list1 = reactive([
+  { name: '姓名', id: 'name' },
+  { name: '学号', id: 'code' },
+  { name: '年纪', id: 'grade' },
+  { name: '专业', id: 'profession' },
+  { name: '班级', id: 'classInfo' },
+  { name: '年龄', id: 'age' }
+])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dragStart = (e, item) => {
-    e.dataTransfer.setData('field', JSON.stringify(item))
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const dragStart = (e, item) => {
+  e.dataTransfer.setData('field', JSON.stringify(item))
+}
 </script>
