@@ -5,12 +5,12 @@
     </el-col>
     <el-col :span="9"></el-col>
     <el-col :span="3">
-      <el-input placeholder="搜索报表" style="line-height: 60px"></el-input>
+      <el-input placeholder="搜索报表, 数据源" style="line-height: 60px"></el-input>
     </el-col>
     <el-col :span="4">
       <el-menu text-color="#409eff" active-text-color="#409eff" mode="horizontal" router>
         <el-menu-item index="/design" class="menu"> 设计 </el-menu-item>
-        <el-menu-item index="/show" class="menu"> 浏览 </el-menu-item>
+        <el-menu-item index="/ds" class="menu"> 数据源 </el-menu-item>
       </el-menu>
     </el-col>
     <el-col :span="2">

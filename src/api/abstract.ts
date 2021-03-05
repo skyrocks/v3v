@@ -1,4 +1,4 @@
-import { getCurrentInstance } from 'vue'
+import { ElMessage } from 'element-plus'
 import { API_DOMAIN } from '@/utils/env'
 import { AxiosRequest, CustomResponse } from './types'
 import { localStore } from '@/utils/storage/localStorage'
@@ -28,38 +28,39 @@ class Abstract {
     })
     return new Promise((resolve, reject) => {
       instance({ baseURL, headers, method, url, params, data, responseType })
-        .then(res => {
-          if (res.status === 200) {
-            if (res.data.success) {
-              resolve({ status: true, message: 'success', data: res.data?.data, origin: res.data })
-            } else {
-              this.$message()({ type: 'error', message: res.data?.errorMessage || url + '请求失败' })
-              resolve({
-                status: false,
-                message: res.data?.errorMessage || url + '请求失败',
-                data: res.data?.data,
-                origin: res.data
-              })
-            }
+        .then(resp => {
+          console.log(resp)
+          if (resp.status === 200) {
+            resolve({
+              status: resp.status,
+              statusText: resp.statusText,
+              origin: resp.data,
+              success: resp.data.success,
+              data: resp.data?.data,
+              message: resp.data?.message
+            })
           } else {
-            resolve({ status: false, message: res.data?.errorMessage || url + '请求失败', data: null })
+            resolve({
+              status: resp.status,
+              statusText: resp.statusText,
+              origin: resp.data,
+              success: false,
+              data: null
+            })
           }
         })
         .catch(err => {
           const message = err?.data?.errorMessage || err?.message || url + '请求失败'
-          this.$message()({ message })
-          reject({ status: false, message, data: null })
+          ElMessage.error(message)
+          reject({
+            status: 0,
+            statusText: err?.data?.errorMessage || err?.message,
+            origin: null,
+            success: false,
+            data: null
+          })
         })
     })
-  }
-
-  protected $message() {
-    const vueInstance = getCurrentInstance()
-    if (vueInstance) {
-      return vueInstance.appContext.config.globalProperties.$message
-    } else {
-      return null
-    }
   }
 
   /**

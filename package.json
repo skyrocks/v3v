@@ -11,8 +11,12 @@
   "dependencies": {
     "axios": "^0.21.1",
     "element-plus": "^1.0.2-beta.32",
+    "lodash": "^4.17.21",
     "splitpanes": "^3.0.4",
+    "sql-formatter": "^4.0.2",
+    "uuid": "^8.3.2",
     "vue": "^3.0.5",
+    "vue-codemirror": "^4.0.6",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
   },

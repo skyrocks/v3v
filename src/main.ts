@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './routes'
+import store from './store'
+import SvgIcon from '@/components/SvgIcon/index.vue'
 import {
   ElLoading,
   ElMessage,
@@ -27,7 +29,11 @@ import {
   ElRadioGroup,
   ElRadio,
   ElTabs,
-  ElTabPane
+  ElTabPane,
+  ElForm,
+  ElFormItem,
+  ElSelect,
+  ElOption
 } from 'element-plus'
 
 const components: any[] = [
@@ -52,25 +58,28 @@ const components: any[] = [
   ElRadioGroup,
   ElRadio,
   ElTabs,
-  ElTabPane
+  ElTabPane,
+  ElForm,
+  ElFormItem,
+  ElSelect,
+  ElOption
 ]
 
 const plugins: any = [ElLoading, ElMessage, ElMessageBox, ElNotification]
 
 const app = createApp(App)
 
-app.config.globalProperties.$ELEMENT = { size: 'small', zIndex: 3000 }
-
 components.forEach((component: any) => {
   app.component(component.name, component)
 })
-
 plugins.forEach((plugin: any) => {
   app.use(plugin)
 })
+//默认small尺寸
+app.config.globalProperties.$ELEMENT = { size: 'small', zIndex: 3000 }
 
-app.use(router)
+app.component('SvgIcon', SvgIcon)
 
-app.config.globalProperties.$message = ElMessage
+app.use(router).use(store)
 
 app.mount('#app')

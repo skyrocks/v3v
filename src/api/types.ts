@@ -22,8 +22,10 @@ export interface AxiosResponse {
 }
 
 export interface CustomResponse {
-  readonly status: boolean
-  readonly message: string
+  readonly status: number
+  readonly statusText: string
+  readonly success: boolean
+  readonly message?: string
   data: any
   origin?: any
 }

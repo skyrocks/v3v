@@ -23,11 +23,12 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended'
   ],
+  ignorePatterns: ['@/components/SvgIcon/alIcon.js'],
   rules: {
     'prettier/prettier': [
       'error',
       {
-        endOfLine: 'lf',
+        endOfLine: 'lf', //换行符使用 lf
         printWidth: 120, // 超过最大值换行
         useTabs: false, // 缩进不使用tab，使用空格
         tabWidth: 2, // 缩进字节数

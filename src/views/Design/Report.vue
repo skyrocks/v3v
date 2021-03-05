@@ -2,12 +2,12 @@
   <Splitpanes class="default-theme" :style="`height: ${editAreaHeight}`">
     <Pane size="75">
       <div class="tbar">
-        <el-button size="small" icon="el-icon-goods">保存</el-button>
-        <el-button size="small" icon="el-icon-eleme">预览</el-button>
+        <el-button icon="el-icon-goods">保存</el-button>
+        <el-button icon="el-icon-eleme">预览</el-button>
         <el-divider direction="vertical"></el-divider>
-        <el-button size="small" icon="el-icon-edit"></el-button>
-        <el-button size="small" icon="el-icon-share"></el-button>
-        <el-button size="small" icon="el-icon-delete"></el-button>
+        <el-button icon="el-icon-edit"></el-button>
+        <el-button icon="el-icon-share"></el-button>
+        <el-button icon="el-icon-delete"></el-button>
       </div>
       <el-row>
         <el-col :span="4">

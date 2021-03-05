@@ -29,6 +29,28 @@ const routes: any[] = [
         component: () => import('@/views/Show/Report.vue')
       }
     ]
+  },
+  {
+    path: '/ds',
+    name: 'ds',
+    component: () => import('@/views/Data/index.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/Data/DataSource/Editor.vue')
+      }
+    ]
+  },
+  {
+    path: '/db',
+    name: 'db',
+    component: () => import('@/views/Data/index.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/Data/Database/Editor.vue')
+      }
+    ]
   }
 ]
 
