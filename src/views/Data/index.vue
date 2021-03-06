@@ -51,7 +51,6 @@ export default defineComponent({
     })
 
     const setTab = path => {
-      console.log(path)
       if (path.indexOf('/db') === 0) {
         state.tab = 'db'
       }

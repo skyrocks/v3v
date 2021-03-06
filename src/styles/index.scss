@@ -37,3 +37,15 @@ a:hover) {
   text-decoration: none;
   outline: none;
 }
+
+::v-global(.el-overlay) { //element-plus MessageBox没有加载这个样式,导致无法显示弹出框
+  position: fixed !important;
+  z-index: 2000;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  height: 100% !important;
+  background-color: rgba(0,0,0,.5) !important;
+  overflow: auto !important;
+}

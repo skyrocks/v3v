@@ -1,15 +1,14 @@
 import { Database, newId } from '../type'
-import { databaseApi } from '@/api/modules/database'
 
 interface StateType {
-  current: Database | undefined
-  currentIndex: number
-  dbArray: Database[]
-  size: number
-  existsNew: boolean
+  current: Database | undefined //当前选择的entity
+  currentIndex: number //当前选择的entity的index
+  dbArray: Database[] //全部entity列表
+  size: number //列表大小
+  existsNew: boolean //当前是否处于新建状态
 }
 
-const create = (name = '', username = ''): Database => {
+const create = (name = ''): Database => {
   const data: Database = {
     databaseId: newId,
     name: name,
@@ -19,7 +18,7 @@ const create = (name = '', username = ''): Database => {
     instance: '',
     sid: '',
     provider: 'mariadb',
-    username: username,
+    username: '',
     password: '',
     status: 0
   }
@@ -35,16 +34,12 @@ const state = (): StateType => ({
 })
 
 const actions = {
-  findAll: (context: any) => {
-    databaseApi.getAll().then(resp => {
-      if (resp.success) {
-        context.commit('setDbArray', resp.data)
-      }
-    })
+  findAll: (context: any, dbArray: Database[]) => {
+    context.commit('setDbArray', dbArray)
   },
   pushNew: (context: any, name: string) => {
-    const data = create(name, '')
-    context.commit('pushArray', data)
+    const data = create(name)
+    context.commit('pushNew', data)
   },
   setCurrent(context: any, data: { db: Database; index: number }) {
     context.commit('setCurrent', data)
@@ -61,6 +56,13 @@ const mutations = {
   setDbArray: (state: StateType, data: Database[]) => {
     state.dbArray = data
     state.size = data.length
+  },
+  pushNew: (state: StateType, data: Database) => {
+    state.dbArray.push(data)
+    state.size = state.dbArray.length
+    state.current = data
+    state.currentIndex = state.dbArray.length - 1
+    state.existsNew = true
   },
   setCurrent: (state: StateType, data: { db: Database; index: number }) => {
     state.current = data.db
@@ -82,21 +84,10 @@ const mutations = {
     } else {
       state.current = state.dbArray[state.currentIndex]
     }
-  },
-  pushArray: (state: StateType, data: Database) => {
-    state.dbArray.push(data)
-    state.size = state.dbArray.length
-    state.current = data
-    state.currentIndex = state.dbArray.length - 1
-    state.existsNew = true
   }
 }
 
-const getters = {
-  dbCount(state: StateType) {
-    return state.dbArray.length
-  }
-}
+const getters = {}
 
 export default {
   database: {

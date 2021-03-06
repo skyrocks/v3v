@@ -72,9 +72,9 @@ const app = createApp(App)
 components.forEach((component: any) => {
   app.component(component.name, component)
 })
-plugins.forEach((plugin: any) => {
-  app.use(plugin)
-})
+// plugins.forEach((plugin: any) => {
+//   app.use(plugin)
+// })
 //默认small尺寸
 app.config.globalProperties.$ELEMENT = { size: 'small', zIndex: 3000 }
 

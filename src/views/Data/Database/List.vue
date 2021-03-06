@@ -40,6 +40,7 @@ import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { Database, newId } from '@/store/type'
+import { databaseApi } from '@/api/modules/database'
 
 export default defineComponent({
   setup() {
@@ -61,13 +62,18 @@ export default defineComponent({
     const existsNew = computed(() => store.state.database.existsNew)
 
     onMounted(() => {
-      store.dispatch('database/findAll')
+      databaseApi.getAll().then(resp => {
+        if (resp.success) {
+          store.dispatch('database/findAll', resp.data)
+        }
+      })
     })
 
     watch(
       () => store.state.database.size,
       newVal => {
         if (newVal === 0) {
+          //如果列表被删空, 跳转页面, 保持右侧也是空白页面
           router.push({ path: '/db' })
         }
       }

@@ -29,7 +29,6 @@ class Abstract {
     return new Promise((resolve, reject) => {
       instance({ baseURL, headers, method, url, params, data, responseType })
         .then(resp => {
-          console.log(resp)
           if (resp.status === 200) {
             resolve({
               status: resp.status,

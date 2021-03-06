@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, Method } from 'axios'
-import { ElLoading } from 'element-plus'
+// import { ElLoading } from 'element-plus'
 
 // 定义挂起请求结构
 interface PendingType {
@@ -37,14 +37,14 @@ const instance = axios.create({
   timeout: 180000,
   responseType: 'json'
 })
-let loading: any
+// let loading: any
 // 添加请求拦截器
 instance.interceptors.request.use(
   request => {
-    loading = ElLoading.service({
-      text: '加载中',
-      background: 'rgba(0, 0, 0, 0.3)'
-    })
+    // loading = ElLoading.service({
+    //   text: '加载中',
+    //   background: 'rgba(0, 0, 0, 0.3)'
+    // })
 
     removePending(request)
 
@@ -62,40 +62,14 @@ instance.interceptors.request.use(
 // 添加响应拦截器
 instance.interceptors.response.use(
   response => {
-    loading.close()
-
+    // loading.close()
     removePending(response.config)
 
     return response
   },
   error => {
-    loading.close()
-
+    // loading.close()
     const response = error.response
-
-    // 根据返回的code值来做不同的处理(和后端约定)
-    switch (response?.status) {
-      case 401:
-        // token失效
-        // storage().remove('token')
-        // storage('localstorage').remove('token')
-        window.location.href = '/login'
-        break
-      case 403:
-        // 没有权限
-        window.location.href = '/403'
-        break
-      case 500:
-        // 服务端错误
-        window.location.href = '/503'
-        break
-      case 503:
-        // 服务端错误
-        window.location.href = '/503'
-        break
-      default:
-        break
-    }
 
     // 超时重新请求
     const config = error.config

@@ -1,8 +1,19 @@
 <template>
   <div>
     <div class="tbar">
-      <el-button type="primary" plain icon="el-icon-folder-checked" @click="handleSave">保存</el-button>
-      <el-button type="danger" :disabled="isNew" plain icon="el-icon-delete" @click="handleDelete"> 删除 </el-button>
+      <el-button type="primary" plain :loading="state.loadingSave" icon="el-icon-folder-checked" @click="handleSave">
+        保存
+      </el-button>
+      <el-button
+        type="danger"
+        plain
+        :loading="state.loadingDelete"
+        :disabled="state.current.databaseId === newId"
+        icon="el-icon-delete"
+        @click="handleDelete"
+      >
+        删除
+      </el-button>
     </div>
     <div class="form-wrap" :style="`height: ${heightForm}`">
       <el-row>
@@ -41,7 +52,15 @@
               <el-input v-model="state.current.password" type="password"></el-input>
             </el-form-item>
             <el-form-item style="margin-top: 25px">
-              <el-button type="success" plain icon="el-icon-magic-stick" @click="handleTest">测试链接</el-button>
+              <el-button
+                type="success"
+                plain
+                :loading="state.loadingTest"
+                icon="el-icon-magic-stick"
+                @click="handleTest"
+              >
+                测试链接
+              </el-button>
               <span v-if="state.testState === 1" class="conn-state success">
                 <i class="el-icon-check"></i> 测试通过
               </span>
@@ -62,10 +81,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, watch, ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { v4 as uuidv4 } from 'uuid'
 import { getContextHeight } from '@/utils'
-import { _ } from 'lodash'
 import { Database, newId } from '@/store/type'
 import { create } from '@/store/modules/database'
 import { databaseApi } from '@/api/modules/database'
@@ -81,12 +99,19 @@ export default defineComponent({
       current: Database | undefined
       testState: number
       testError: string // 0未测试, 1通过, -1未通过
-    }>({ current: create(), testSuccess: 0, testError: '' })
+      loadingSave: boolean
+      loadingDelete: boolean
+      loadingTest: boolean
+    }>({
+      current: create(),
+      testSuccess: 0,
+      testError: '',
+      loadingSave: false,
+      loadingDelete: false,
+      loadingTest: false
+    })
 
     const heightForm = computed(() => `${getContextHeight() - 46}px`)
-
-    //当前是否是新
-    const isNew = computed(() => state.current.isNew)
 
     const cloneModal = (db: Database) => {
       if (db) {
@@ -159,37 +184,60 @@ export default defineComponent({
     })
 
     const handleSave = () => {
-      if (state.current.databaseId === newId) {
-        const n = _.clone(state.current)
-        n.databaseId = uuidv4()
-        databaseApi.add(n).then(resp => handleSaveCallback(true, resp))
-      } else {
-        databaseApi.update(state.current).then(resp => handleSaveCallback(false, resp))
-      }
-    }
-
-    const handleSaveCallback = (isNew, resp) => {
-      if (resp.success) {
-        store.dispatch('database/saveCurrent', { db: state.current, isNew })
-        ElMessage.success('数据服务保存成功')
-      } else {
-        ElMessage.error(resp.message)
-      }
+      formRef.value.validate(valid => {
+        if (valid) {
+          state.loadingSave = true
+          if (state.current.databaseId === newId) {
+            state.current.databaseId = uuidv4()
+            databaseApi.add(state.current).then(resp => {
+              if (resp.success) {
+                store.dispatch('database/saveCurrent', { db: state.current, isNew: true })
+                ElMessage.success('数据服务保存成功')
+              } else {
+                //如果新数据保存错误, ID需要还原, 界面的按钮以次来显示状态
+                state.current.databaseId = newId
+                ElMessage.error(resp.message)
+              }
+              state.loadingSave = false
+            })
+          } else {
+            databaseApi.update(state.current).then(resp => {
+              if (resp.success) {
+                store.dispatch('database/saveCurrent', { db: state.current, isNew: false })
+                ElMessage.success('数据服务保存成功')
+              } else {
+                ElMessage.error(resp.message)
+              }
+              state.loadingSave = false
+            })
+          }
+        }
+      })
     }
 
     const handleDelete = () => {
-      databaseApi.remove(state.current.databaseId).then(resp => {
-        if (resp.success) {
-          store.dispatch('database/removeCurrent')
-        } else {
-          alert(resp.message)
-        }
+      ElMessageBox.confirm('确定要删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        state.loadingDelete = true
+        databaseApi.remove(state.current.databaseId).then(resp => {
+          if (resp.success) {
+            store.dispatch('database/removeCurrent')
+            ElMessage.success('数据服务已删除')
+          } else {
+            ElMessage.error(resp.message)
+          }
+          state.loadingDelete = false
+        })
       })
     }
 
     const handleTest = () => {
       formRef.value.validate(valid => {
         if (valid) {
+          state.loadingTest = true
           databaseApi.test(state.current).then(resp => {
             if (resp.success) {
               state.testState = resp.data.connected ? 1 : -1
@@ -198,12 +246,13 @@ export default defineComponent({
               state.testState = -1
               state.testError = resp.message
             }
+            state.loadingTest = false
           })
         }
       })
     }
 
-    return { heightForm, state, isNew, formRef, firstItemRef, rules, handleSave, handleDelete, handleTest }
+    return { heightForm, state, newId, formRef, firstItemRef, rules, handleSave, handleDelete, handleTest }
   }
 })
 </script>
