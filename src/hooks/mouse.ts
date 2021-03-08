@@ -1,10 +1,19 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
+export type MouseMoveDirection = 'up' | 'down'
+
 export function useMousePosition() {
   const x = ref(0)
   const y = ref(0)
 
+  const direction = ref('')
+
   function update(e: any) {
+    if (x.value > e.pageX) {
+      direction.value = 'down'
+    } else {
+      direction.value = 'up'
+    }
     x.value = e.pageX
     y.value = e.pageY
   }
@@ -17,5 +26,5 @@ export function useMousePosition() {
     window.removeEventListener('mousemove', update)
   })
 
-  return { x, y }
+  return { x, y, direction }
 }

@@ -1,11 +1,13 @@
 <template>
-  <Splitpanes class="default-theme" :style="`height: ${height}`">
+  <Splitpanes class="default-theme" :style="`height: ${height}px`">
     <Pane size="15" min-size="5" max-size="50" class="left">
       <el-tabs v-model="state.tab" tab-position="bottom" type="card" class="tab">
-        <el-tab-pane label="数据源" name="ds" class="pane1" :style="`height: ${paneHeight}`">
-          <DataSource></DataSource>
+        <el-tab-pane label="数据源" name="ds">
+          <div class="pane1">
+            <DataSource></DataSource>
+          </div>
         </el-tab-pane>
-        <el-tab-pane label="数据服务" name="db" class="pane2" :style="`height: ${paneHeight}`">
+        <el-tab-pane label="数据服务" name="db" class="pane2" :style="`height: ${height - 35}px`">
           <Database></Database>
         </el-tab-pane>
       </el-tabs>
@@ -35,11 +37,7 @@ export default defineComponent({
     }>({ tab: 'ds' })
 
     const height = computed(() => {
-      return `${getContextHeight()}px`
-    })
-
-    const paneHeight = computed(() => {
-      return `${getContextHeight() - 35}px`
+      return `${getContextHeight()}`
     })
 
     onMounted(() => {
@@ -59,7 +57,7 @@ export default defineComponent({
       }
     }
 
-    return { state, height, paneHeight }
+    return { state, height }
   }
 })
 </script>

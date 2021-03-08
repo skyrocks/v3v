@@ -33,7 +33,8 @@ import {
   ElForm,
   ElFormItem,
   ElSelect,
-  ElOption
+  ElOption,
+  ElCard
 } from 'element-plus'
 
 const components: any[] = [
@@ -62,7 +63,8 @@ const components: any[] = [
   ElForm,
   ElFormItem,
   ElSelect,
-  ElOption
+  ElOption,
+  ElCard
 ]
 
 const plugins: any = [ElLoading, ElMessage, ElMessageBox, ElNotification]
@@ -72,9 +74,9 @@ const app = createApp(App)
 components.forEach((component: any) => {
   app.component(component.name, component)
 })
-// plugins.forEach((plugin: any) => {
-//   app.use(plugin)
-// })
+plugins.forEach((plugin: any) => {
+  app.use(plugin)
+})
 //默认small尺寸
 app.config.globalProperties.$ELEMENT = { size: 'small', zIndex: 3000 }
 

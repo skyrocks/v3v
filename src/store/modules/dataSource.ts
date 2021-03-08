@@ -34,7 +34,7 @@ const state = (): StateType => ({
 })
 
 const actions = {
-  setList: (context: any, dbArray: Database[]) => {
+  findAll: (context: any, dbArray: Database[]) => {
     context.commit('setDbArray', dbArray)
   },
   pushNew: (context: any, name: string) => {
@@ -90,7 +90,7 @@ const mutations = {
 const getters = {}
 
 export default {
-  database: {
+  dataSource: {
     namespaced: true,
     state,
     mutations,

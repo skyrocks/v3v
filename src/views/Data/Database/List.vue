@@ -64,7 +64,7 @@ export default defineComponent({
     onMounted(() => {
       databaseApi.getAll().then(resp => {
         if (resp.success) {
-          store.dispatch('database/findAll', resp.data)
+          store.dispatch('database/setList', resp.data)
         }
       })
     })
