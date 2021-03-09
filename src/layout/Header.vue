@@ -34,7 +34,6 @@ import imgLogo from '../assets/images/logo.png'
 
 export default defineComponent({
   setup() {
-
     const store = useStore()
 
     const userName = computed(() => {

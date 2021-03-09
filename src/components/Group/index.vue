@@ -155,6 +155,7 @@ export default defineComponent({
       stateMenu.top = event.pageY
       stateMenu.visible = true
       stateMenu.menuType = 'item'
+      console.log(itemId)
     }
 
     //添加分组名称

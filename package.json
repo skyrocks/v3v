@@ -6,7 +6,7 @@
     "dev": "NODE_ENV=development vite",
     "build": "NODE_ENV=production vite build",
     "serve": "vite preview",
-    "lint": "eslint --fix --ext .ts,.js,.vue src"
+    "lint": "eslint --fix --ext .ts,.js,.vue,.tsx src"
   },
   "dependencies": {
     "axios": "^0.21.1",

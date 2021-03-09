@@ -1,8 +1,8 @@
-import { defineComponent, onMounted, reactive } from 'vue';
+import { defineComponent, onMounted, reactive } from 'vue'
 import { reportApi } from '@/api/modules/report'
 // import './group.scss'
 
-export interface ReportType{
+export interface ReportType {
   reportId: string
   reportName: string
   groupId: string
@@ -10,7 +10,7 @@ export interface ReportType{
   memo: string
 }
 
-export interface ReportGroupType{
+export interface ReportGroupType {
   groupId: string
   groupName: string
   seq: number
@@ -20,14 +20,13 @@ export interface ReportGroupType{
 
 export default defineComponent({
   setup() {
-
     const status = reactive<{
-      groups: ReportGroupType[], 
-      open:{[key:string]: boolean}
-    }>({groups: [], open:{}})
-    
+      groups: ReportGroupType[]
+      open: { [key: string]: boolean }
+    }>({ groups: [], open: {} })
+
     const getGroups = () => {
-      reportApi.getGroups().then((response) => {
+      reportApi.getGroups().then(response => {
         status.groups = response.data
       })
     }
@@ -38,32 +37,26 @@ export default defineComponent({
 
     onMounted(getGroups)
 
-    return() => (
+    return () => (
       <el-menu>
-      {
-        status.groups.map( (g) => {
+        {status.groups.map(g => {
           return (
             <el-submenu>
-              <i class="el-icon-menu"></i> 
+              <i class="el-icon-menu"></i>
               {g.groupName}
-              {
-                g.reports.map ( (r) => {
-                  return (
-                    <el-menu-item>
-                      <i class="el-icon-menu"></i>
-                      { r.reportName }
-                    </el-menu-item>
-                  )
-                })
-              } 
+              {g.reports.map(r => {
+                return (
+                  <el-menu-item>
+                    <i class="el-icon-menu"></i>
+                    {r.reportName}
+                  </el-menu-item>
+                )
+              })}
             </el-submenu>
           )
-        })
-      }
+        })}
       </el-menu>
     )
-
-    
 
     // return() => (
     //   <div><ul class="style-list">
@@ -72,7 +65,7 @@ export default defineComponent({
     //       return (
     //         <li class="item" onClick={ toggleGroupStatus.bind(this, g) }>
     //           <span class={status.open[g.groupId] ? 'open': ''}>
-    //             <i class={status.open[g.groupId] ? "el-icon-folder-opened": "el-icon-folder"}></i> 
+    //             <i class={status.open[g.groupId] ? "el-icon-folder-opened": "el-icon-folder"}></i>
     //             { g.groupName }
     //           </span>
     //           <ul class={`style-list children ${status.open[g.groupId] ? '': 'hidden'}`}>
@@ -88,5 +81,5 @@ export default defineComponent({
     //   }
     // </ul></div>
     // )
-  }  
+  }
 })
