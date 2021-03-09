@@ -1,5 +1,5 @@
 import { Ref, UnwrapRef, ComputedRef, computed, reactive, toRefs, ref, onMounted, onUnmounted } from 'vue'
-import { num2col } from '@/utils/index.ts'
+import { num2col } from '@/utils/index'
 
 // 定义单元格数据结构
 export interface RowData {

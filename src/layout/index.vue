@@ -9,9 +9,13 @@
     </el-main>
   </el-container>
 </template>
-<script setup lang="ts">
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+<script lang="ts">
+import { defineComponent } from 'vue'
 import Header from './Header.vue'
+
+export default defineComponent({
+  components: { Header }
+})
 </script>
 
 <style lang="scss" scoped>

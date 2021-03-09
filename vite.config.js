@@ -19,14 +19,14 @@ const env = loadEnv(process.env.NODE_ENV, process.cwd())
 console.log(env)
 
 const config = {
-  // base: './',
+  // base: '/aa/',
   plugins: [
     vue(),
     vitePluginImp({
       libList: [
         {
           libName: 'element-plus',
-          style: (name) => {
+          style: name => {
             return `element-plus/lib/theme-chalk/${name}.css`
           }
         }
@@ -54,7 +54,7 @@ const config = {
     proxy: {
       '/api': {
         changeOrigin: true,
-        rewrite: (path) => {
+        rewrite: path => {
           console.log(path)
           return path.replace(/^\/api/, '')
         }
