@@ -40,7 +40,6 @@ import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { Database, newId } from '@/store/type'
-import { databaseApi } from '@/api/modules/database'
 
 export default defineComponent({
   setup() {
@@ -61,13 +60,7 @@ export default defineComponent({
     const current = computed(() => store.state.database.current)
     const existsNew = computed(() => store.state.database.existsNew)
 
-    onMounted(() => {
-      databaseApi.getAll().then(resp => {
-        if (resp.success) {
-          store.dispatch('database/setList', resp.data)
-        }
-      })
-    })
+    onMounted(() => store.dispatch('database/findList'))
 
     watch(
       () => store.state.database.size,

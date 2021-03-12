@@ -1,6 +1,6 @@
 import Abstract from '../abstract'
-import { DataSourceGroup } from '@/store/type'
-class DataSource extends Abstract {
+import { DataSourceGroup, DataSource } from '@/store/type'
+class DataSourceApi extends Abstract {
   getGroups() {
     return this.get({ url: '/ds/groups' })
   }
@@ -19,6 +19,13 @@ class DataSource extends Abstract {
     return this.post({ url: '/ds/groups/sort', data })
   }
 
+  createDs(data: DataSource) {
+    return this.post({ url: '/dss/create', data })
+  }
+  removeChild(dataSourceId: string) {
+    return this.post({ url: '/dss/delete', data: { dataSourceId } })
+  }
+
   sqlRun(sql: string) {
     return this.post({ url: '/ds/sql/run', data: { sql } })
   }
@@ -28,7 +35,7 @@ class DataSource extends Abstract {
 let instance
 const dsApi = (() => {
   if (instance) return instance
-  instance = new DataSource()
+  instance = new DataSourceApi()
   return instance
 })()
 

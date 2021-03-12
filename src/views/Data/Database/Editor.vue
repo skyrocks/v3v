@@ -217,8 +217,8 @@ export default defineComponent({
 
     const handleDelete = () => {
       ElMessageBox.confirm('确定要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
         type: 'warning'
       }).then(() => {
         state.loadingDelete = true

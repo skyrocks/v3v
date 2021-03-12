@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Frame from '@/layout/index.vue'
-import { getToken } from '@/utils/token'
+import { getToken, removeToken } from '@/utils/token'
 import store from '@/store/index'
 
 const routes: any[] = [
@@ -85,17 +85,20 @@ const whiteList = ['/login', '/404']
 router.beforeEach(async to => {
   const hasToken = getToken()
   if (hasToken) {
-    if (to.path === '/login') {
-      // 如果是已登录状态,跳回首页,不允许重复登录
-      return '/'
-      // NProgress.done()
+    if (store.getters.user) {
+      // 没有return, 等于next()
     } else {
+      //虽然有token, 但是没有登录用户, 先获取用户
+      await store.dispatch('auth/getProfile')
       if (!store.getters.user) {
-        //虽然有token, 但是没有登录用户, 先获取用户
-        await store.dispatch('auth/getProfile')
+        //如果获取失败, 删除token, 跳回登录,
+        removeToken()
+        return `/login?redirect=${to.path}`
+      } else {
+        // 没有return, 等于next()
       }
-      // NProgress.done()
     }
+    // NProgress.done()
   } else {
     if (whiteList.indexOf(to.path) === -1) {
       return `/login?redirect=${to.path}`

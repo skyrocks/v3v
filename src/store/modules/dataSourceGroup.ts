@@ -1,4 +1,4 @@
-import { DataSourceGroup } from '../type'
+import { DataSourceGroup, DataSource } from '../type'
 
 interface StateType {
   current: DataSourceGroup | undefined //当前选择的entity
@@ -31,6 +31,14 @@ const actions = {
   },
   sort(context: any, index: { originIndex: number; targetIndex: number; callback: Function }) {
     context.commit('sort', index)
+  },
+
+  createDataSource: (context: any, payload: { data: DataSource; groupIndex: number }) => {
+    context.commit('createDataSource', payload)
+  },
+
+  removeChild: (context: any, payload: { index: number; child: DataSource }) => {
+    context.commit('removeChild', payload)
   }
 }
 
@@ -78,7 +86,25 @@ const mutations = {
         }
       })
 
+      //重新修复,避免seq断档
+      for (let i = 0; i < state.list.length; i++) {
+        state.list[i].seq = i
+      }
+
       index.callback(state.list)
+    }
+  },
+
+  createDataSource: (state: StateType, payload: { data: DataSource; groupIndex: number }) => {
+    state.list[payload.groupIndex].dataSources.push(payload.data)
+  },
+
+  removeChild: (state: StateType, payload: { index: number; child: DataSource }) => {
+    for (let i = 0; i < state.list.length; i++) {
+      if (state.list[i].groupId === payload.child.groupId) {
+        state.list[i].dataSources.splice(payload.index, 1)
+        break
+      }
     }
   }
 }

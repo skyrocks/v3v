@@ -1,4 +1,5 @@
 import { Database, newId } from '../type'
+import { databaseApi } from '@/api/modules/database'
 
 interface StateType {
   current: Database | undefined //当前选择的entity
@@ -34,8 +35,14 @@ const state = (): StateType => ({
 })
 
 const actions = {
-  setList: (context: any, dbArray: Database[]) => {
-    context.commit('setDbArray', dbArray)
+  findList: (context: any) => {
+    if (context.state.dbArray.length == 0) {
+      databaseApi.getAll().then(resp => {
+        if (resp.success) {
+          context.commit('setList', resp.data)
+        }
+      })
+    }
   },
   pushNew: (context: any, name: string) => {
     const data = create(name)
@@ -53,7 +60,7 @@ const actions = {
 }
 
 const mutations = {
-  setDbArray: (state: StateType, data: Database[]) => {
+  setList: (state: StateType, data: Database[]) => {
     state.dbArray = data
     state.size = data.length
   },
@@ -87,7 +94,9 @@ const mutations = {
   }
 }
 
-const getters = {}
+const getters = {
+  list: (state: StateType) => state.dbArray
+}
 
 export default {
   database: {

@@ -8,9 +8,10 @@
       @contextmenu.stop
     ></el-input>
     <el-menu
+      ref="refMenu"
       class="menu-wrap"
-      @open="index => handleOpenClose(index)"
-      @close="index => handleOpenClose(index)"
+      @open="index => handleGroupOpenClose(index)"
+      @close="index => handleGroupOpenClose(index)"
       @select="(index, path) => handleSelect(path)"
     >
       <el-submenu v-for="(g, index) in list" :key="g.groupId" :index="g.groupId">
@@ -25,16 +26,16 @@
             @dragleave="dragLeave($event, index)"
             @drop="drop($event, index)"
           >
-            <i v-if="!state.subMenuOpen[g.groupId]" class="el-icon-folder"></i>
-            <i v-else class="el-icon-folder-opened opened-submenu"></i>
+            <i v-if="!state.groupOpen[g.groupId]" class="el-icon-folder"></i>
+            <i v-else class="el-icon-folder-opened group-opened"></i>
             <span>{{ g.groupName }}</span>
           </div>
         </template>
         <el-menu-item
-          v-for="child in g[keys.item]"
-          :key="`${g.groupId}-${child[keys.id]}`"
-          :index="`${g.groupId}-${child[keys.id]}`"
-          @contextmenu.prevent="handleContextMenuItem(child[keys.id])"
+          v-for="(child, cIndex) in g[keys.children]"
+          :key="`${child[keys.id]}`"
+          :index="`${child[keys.id]}`"
+          @contextmenu.prevent="handleContextMenuItem(child, cIndex)"
           @contextmenu.stop
         >
           <i class="el-icon-document"></i>
@@ -59,31 +60,34 @@
       class="context-menu"
       :style="{ left: stateMenu.left + 'px', top: stateMenu.top + 'px' }"
     >
-      <ul v-show="stateMenu.menuType === ''" class="content-menu-list">
+      <ul v-show="!stateMenu.elementType" class="content-menu-list">
         <li @click="handleAddGroup"><i class="el-icon-circle-plus-outline"></i> 添加新分组</li>
       </ul>
-      <ul v-show="stateMenu.menuType === 'group'" class="content-menu-list">
-        <li><i class="el-icon-circle-plus-outline"></i> 添加新数据源</li>
+      <ul v-show="stateMenu.elementType === 'group'" class="content-menu-list">
+        <li @click="handleAddChild"><i class="el-icon-circle-plus-outline"></i> 添加新数据源</li>
         <li @click="handleAddGroup"><i class="el-icon-circle-plus-outline"></i> 添加新分组</li>
         <li @click="handleEditGroup"><i class="el-icon-edit-outline"></i> 修改分组名称</li>
         <li @click="handleRemoveGroup"><i class="el-icon-remove-outline"></i> 删除当前分组</li>
       </ul>
-      <ul v-show="stateMenu.menuType === 'item'" class="content-menu-list">
-        <li><i class="el-icon-remove-outline"></i> 删除数据源</li>
+      <ul v-show="stateMenu.elementType === 'child'" class="content-menu-list">
+        <li @click="handleRemoveChild"><i class="el-icon-remove-outline"></i> 删除数据源</li>
       </ul>
     </el-card>
   </Teleport>
+  <ChildDialog ref="refChildDialog"></ChildDialog>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, watch, reactive, ref } from 'vue'
 import { getContextHeight } from '@/utils/index.ts'
 import { useRouter } from 'vue-router'
-import { DataSourceGroup } from '@/store/type'
+import { DataSource, DataSourceGroup } from '@/store/type'
 import controller from './hooks'
 import { ElMessageBox } from 'element-plus'
+import ChildDialog from './Child.vue'
 
 export default defineComponent({
+  components: { ChildDialog },
   props: {
     groupType: {
       type: String,
@@ -95,32 +99,32 @@ export default defineComponent({
       return `${getContextHeight() - 35 - 26}`
     })
 
-    const { keys, list, create, update, remove, sort } = controller(props.groupType)
+    const refChildDialog = ref()
+    const refMenu = ref()
 
     const state = reactive<{
       currentGroup: DataSourceGroup | undefined
       currentGroupIndex: number
+      currentChild: DataSource | undefined
+      currentChildIndex: number
       searchText: string
-      subMenuOpen: { [key: string]: boolean }
-    }>({ currentGroup: undefined, currentGroupIndex: -1, searchText: '', subMenuOpen: {} })
-
-    const handleOpenClose = (groupId: string) => {
-      state.subMenuOpen[groupId] = !state.subMenuOpen[groupId]
-    }
-
-    const router = useRouter()
-    const handleSelect = (path: string) => {
-      const id = path[1].split('-')[1]
-      router.push(`${keys.routeBase}/${id}`)
-    }
+      groupOpen: { [key: string]: boolean }
+    }>({
+      currentGroup: undefined,
+      currentGroupIndex: -1,
+      currentChild: undefined,
+      currentChildIndex: -1,
+      searchText: '',
+      groupOpen: {}
+    })
 
     // 右键菜单相关
     const stateMenu = reactive<{
       visible: boolean
       top: number
       left: number
-      menuType: string
-    }>({ visible: false, top: 100, left: 100, menuType: '' })
+      elementType: string | undefined
+    }>({ visible: false, top: 100, left: 100, elementType: undefined })
 
     watch(
       () => stateMenu.visible,
@@ -137,26 +141,31 @@ export default defineComponent({
       stateMenu.left = event.pageX
       stateMenu.top = event.pageY
       stateMenu.visible = true
-      stateMenu.menuType = ''
+      stateMenu.elementType = undefined
     }
     const handleContextMenuGroup = (group, index) => {
       stateMenu.left = event.pageX
       stateMenu.top = event.pageY
       stateMenu.visible = true
-      stateMenu.menuType = 'group'
+      stateMenu.elementType = 'group'
 
-      state.subMenuOpen[group.groupId] = true
       state.currentGroup = group
       state.currentGroupIndex = index
+      state.groupOpen[group.groupId] = true
+      refMenu.value.open(group.groupId)
     }
 
-    const handleContextMenuItem = itemId => {
+    const handleContextMenuItem = (child, index) => {
       stateMenu.left = event.pageX
       stateMenu.top = event.pageY
       stateMenu.visible = true
-      stateMenu.menuType = 'item'
-      console.log(itemId)
+      stateMenu.elementType = 'child'
+
+      state.currentChild = child
+      state.currentChildIndex = index
     }
+
+    const { keys, list, create, update, remove, sort, removeChild } = controller(props.groupType)
 
     //添加分组名称
     const inputRef = ref()
@@ -181,8 +190,8 @@ export default defineComponent({
     }
     const handleEditGroup = () => {
       ElMessageBox.prompt('请修改分组名称', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
         inputValue: state.currentGroup?.groupName,
         inputPattern: /^.+$/,
         inputErrorMessage: '分组名称不能为空'
@@ -194,12 +203,23 @@ export default defineComponent({
       })
     }
     const handleRemoveGroup = () => {
-      ElMessageBox.confirm('确定要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      ElMessageBox.confirm(`确定要删除分组[ ${state.currentGroup?.groupName} ]吗?`, '提示', {
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
         type: 'warning'
       }).then(() => {
         remove(state.currentGroup?.groupId, state.currentGroupIndex)
+      })
+    }
+
+    const handleRemoveChild = () => {
+      ElMessageBox.confirm(`确定要删除数据源[ ${state.currentChild?.name} ]吗?`, '提示', {
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
+        type: 'warning'
+      }).then(() => {
+        console.log(state.currentGroupIndex)
+        removeChild(state.currentChild, state.currentChildIndex)
       })
     }
 
@@ -223,15 +243,29 @@ export default defineComponent({
       e.target.parentNode.style.border = '0'
     }
 
+    const handleGroupOpenClose = (groupId: string) => {
+      state.groupOpen[groupId] = !state.groupOpen[groupId]
+    }
+
+    // children相关
+    const handleAddChild = () => {
+      refChildDialog.value.open(state.currentGroup, state.currentGroupIndex)
+    }
+
+    const router = useRouter()
+    const handleSelect = (path: string) => {
+      console.log(path[1])
+      const id = path[1]
+      router.push(`${keys.routeBase}/${id}`)
+    }
+
     return {
       height,
       state,
       keys,
       list,
 
-      handleOpenClose,
-      handleSelect,
-
+      refMenu,
       stateMenu,
       handleContextMenuEmpty,
       handleContextMenuGroup,
@@ -244,17 +278,24 @@ export default defineComponent({
       handleChange,
       handleEditGroup,
       handleRemoveGroup,
+      handleGroupOpenClose,
+      handleRemoveChild,
+
       dragStart,
       drop,
       dragEnter,
-      dragLeave
+      dragLeave,
+
+      refChildDialog,
+      handleAddChild,
+      handleSelect
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.opened-submenu {
+.group-opened {
   color: $--color-text-link;
 }
 .menu-wrap {
