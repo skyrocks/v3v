@@ -25,12 +25,24 @@ export interface Database {
   status: number
 }
 
+export interface DataSourceField {
+  dataSourceId: string
+  fieldKey: string
+}
+export interface DataSourceParam {
+  dataSourceId: string
+  paramsKey: string
+  paramsName: string
+  defaultValue: string
+}
 export interface DataSource {
   dataSourceId: string
   name: string
   sqlText: string
   databaseId: string
   groupId: string
+  params: DataSourceParam[]
+  fields: DataSourceField[]
 }
 
 export interface DataSourceGroup {

@@ -12,7 +12,7 @@
       class="menu-wrap"
       @open="index => handleGroupOpenClose(index)"
       @close="index => handleGroupOpenClose(index)"
-      @select="(index, path) => handleSelect(path)"
+      @select="(index, path) => handleSelectChild(path)"
     >
       <el-submenu v-for="(g, index) in list" :key="g.groupId" :index="g.groupId">
         <template #title>
@@ -253,8 +253,7 @@ export default defineComponent({
     }
 
     const router = useRouter()
-    const handleSelect = (path: string) => {
-      console.log(path[1])
+    const handleSelectChild = (path: string) => {
       const id = path[1]
       router.push(`${keys.routeBase}/${id}`)
     }
@@ -288,7 +287,7 @@ export default defineComponent({
 
       refChildDialog,
       handleAddChild,
-      handleSelect
+      handleSelectChild
     }
   }
 })

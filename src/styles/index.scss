@@ -49,3 +49,25 @@ a:hover) {
   background-color: rgba(0,0,0,.5) !important;
   overflow: auto !important;
 }
+
+.list-unstyled{
+  padding-left: 0;
+  list-style: none;
+}
+
+.page-tbar {
+  padding: 6px;
+  border-bottom: 1px solid $--color-line-split;
+  button {
+    font-size: $--size-font-base;
+    border: 1px solid transparent;
+    background-color: transparent;
+    &:hover,
+    &:focus {
+      border: 1px solid $--color-bg-link;
+    }
+    i {
+      font-size: $--size-font-larger !important;
+    }
+  }
+}

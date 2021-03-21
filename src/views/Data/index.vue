@@ -1,7 +1,7 @@
 <template>
   <Splitpanes class="default-theme" :style="`height: ${height}px`">
     <Pane size="15" min-size="5" max-size="50" class="left">
-      <el-tabs v-model="state.tab" tab-position="bottom" type="card" class="tab">
+      <el-tabs v-model="state.tab" tab-position="bottom" type="card" class="left-tab">
         <el-tab-pane label="数据源" name="ds">
           <div class="pane1">
             <DataSource></DataSource>
@@ -73,16 +73,17 @@ export default defineComponent({
 .pane2 {
   background-color: $--color-bg-enabled;
 }
-::v-deep(.el-tabs__item) {
-  color: $--color-text-base;
-  font-size: $--size-font-base;
-  font-size: 1.4rem;
-  height: 35px !important;
-  line-height: 35px;
-
-  &.is-active {
-    color: $--color-text-link;
-    background-color: $--color-bg-enabled;
+::v-deep(.left-tab) {
+  .el-tabs__item {
+    color: $--color-text-base;
+    font-size: $--size-font-base;
+    font-size: 1.4rem;
+    height: 35px;
+    line-height: 35px;
+    &.is-active {
+      color: $--color-text-link;
+      background-color: $--color-bg-enabled;
+    }
   }
 }
 ::v-deep(.el-tabs__header) {

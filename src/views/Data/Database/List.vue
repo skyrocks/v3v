@@ -67,7 +67,7 @@ export default defineComponent({
       newVal => {
         if (newVal === 0) {
           //如果列表被删空, 跳转页面, 保持右侧也是空白页面
-          router.push({ path: '/db' })
+          router.push({ path: '/main/db' })
         }
       }
     )
@@ -86,13 +86,13 @@ export default defineComponent({
         state.newShow = false
         store.dispatch('database/pushNew', state.newName)
         state.newName = ''
-        router.push({ path: '/db/new' })
+        router.push({ path: '/main/db/new' })
       }
     }
 
     const handleEdit = (db: Database, index: number) => {
       store.dispatch('database/setCurrent', { db, index })
-      router.push({ path: `/db/${db.databaseId}` })
+      router.push({ path: `/main/db/${db.databaseId}` })
     }
 
     return { state, newId, existsNew, dbArray, current, inputRef, handleAdd, handleEdit, handleBlur, handleChange }

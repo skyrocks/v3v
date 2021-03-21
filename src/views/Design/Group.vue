@@ -47,7 +47,7 @@ export default defineComponent({
 
     const handleSelect = (index, path) => {
       const reportId = path[1].split('-')[1]
-      router.push(`/design/${reportId}`)
+      router.push(`/main/design/${reportId}`)
     }
 
     return { status, handleOpenClose, handleSelect }

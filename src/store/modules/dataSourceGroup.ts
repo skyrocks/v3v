@@ -1,16 +1,12 @@
 import { DataSourceGroup, DataSource } from '../type'
 
 interface StateType {
-  current: DataSourceGroup | undefined //当前选择的entity
-  currentIndex: number //当前选择的entity的index
   list: DataSourceGroup[] //全部entity列表
   size: number //列表大小
   existsNew: boolean //当前是否处于新建状态
 }
 
 const state = (): StateType => ({
-  current: undefined,
-  currentIndex: -1,
   list: [],
   size: 0,
   existsNew: false

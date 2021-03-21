@@ -19,6 +19,13 @@ class DataSourceApi extends Abstract {
     return this.post({ url: '/ds/groups/sort', data })
   }
 
+  getDs(dataSourceId: string) {
+    return this.get({ url: `/dss/${dataSourceId}` })
+  }
+
+  updateDs(data: DataSource) {
+    return this.post({ url: '/dss/update', data })
+  }
   createDs(data: DataSource) {
     return this.post({ url: '/dss/create', data })
   }
@@ -26,8 +33,8 @@ class DataSourceApi extends Abstract {
     return this.post({ url: '/dss/delete', data: { dataSourceId } })
   }
 
-  sqlRun(sql: string) {
-    return this.post({ url: '/ds/sql/run', data: { sql } })
+  sqlRun(sql: string, params: {}, database: string) {
+    return this.post({ url: '/sql/run', data: { sql, params, database } })
   }
 }
 

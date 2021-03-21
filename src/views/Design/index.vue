@@ -55,7 +55,6 @@ export default defineComponent({
 ::v-deep(.el-tabs__item) {
   color: $--color-text-base;
   font-size: $--size-font-base;
-  font-size: 1.4rem;
   height: 35px !important;
   line-height: 35px;
 
