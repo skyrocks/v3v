@@ -29,8 +29,8 @@ class DataSourceApi extends Abstract {
   createDs(data: DataSource) {
     return this.post({ url: '/dss/create', data })
   }
-  removeChild(dataSourceId: string) {
-    return this.post({ url: '/dss/delete', data: { dataSourceId } })
+  removeChild(child: DataSource) {
+    return this.post({ url: '/dss/delete', data: child })
   }
 
   sqlRun(sql: string, params: {}, database: string) {

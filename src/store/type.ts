@@ -51,3 +51,18 @@ export interface DataSourceGroup {
   seq: number
   dataSources: DataSource[]
 }
+
+export interface Report {
+  reportId: string
+  reportName: string
+  groupId: string
+  seq: number
+  memo: string
+}
+
+export interface ReportGroup {
+  groupId: string
+  groupName: string
+  seq: number
+  reports: Report[]
+}

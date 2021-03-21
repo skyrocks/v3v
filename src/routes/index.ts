@@ -27,27 +27,27 @@ const routes: any[] = [
       },
       { path: 'me', name: 'me', component: () => import('@/views/Me/index.vue') },
       {
-        path: 'design',
-        name: 'design',
-        component: () => import('@/views/Design/index.vue'),
+        path: 'report',
+        name: 'report',
+        component: () => import('@/views/Report/index.vue'),
         children: [
           {
             path: ':id',
-            component: () => import('@/views/Design/Report.vue')
+            component: () => import('@/views/Report/Report.vue')
           }
         ]
       },
-      {
-        path: 'show',
-        name: 'show',
-        component: () => import('@/views/Show/index.vue'),
-        children: [
-          {
-            path: ':id',
-            component: () => import('@/views/Show/Report.vue')
-          }
-        ]
-      },
+      // {
+      //   path: 'show',
+      //   name: 'show',
+      //   component: () => import('@/views/Show/index.vue'),
+      //   children: [
+      //     {
+      //       path: ':id',
+      //       component: () => import('@/views/Show/Report.vue')
+      //     }
+      //   ]
+      // },
       {
         path: 'ds',
         name: 'ds',

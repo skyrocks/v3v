@@ -64,13 +64,13 @@
         <li @click="handleAddGroup"><i class="el-icon-circle-plus-outline"></i> 添加新分组</li>
       </ul>
       <ul v-show="stateMenu.elementType === 'group'" class="content-menu-list">
-        <li @click="handleAddChild"><i class="el-icon-circle-plus-outline"></i> 添加新数据源</li>
+        <li @click="handleAddChild"><i class="el-icon-circle-plus-outline"></i> {{ keys.addChildMenu }} </li>
         <li @click="handleAddGroup"><i class="el-icon-circle-plus-outline"></i> 添加新分组</li>
         <li @click="handleEditGroup"><i class="el-icon-edit-outline"></i> 修改分组名称</li>
         <li @click="handleRemoveGroup"><i class="el-icon-remove-outline"></i> 删除当前分组</li>
       </ul>
       <ul v-show="stateMenu.elementType === 'child'" class="content-menu-list">
-        <li @click="handleRemoveChild"><i class="el-icon-remove-outline"></i> 删除数据源</li>
+        <li @click="handleRemoveChild"><i class="el-icon-remove-outline"></i> {{ keys.removeGroupMenu }}</li>
       </ul>
     </el-card>
   </Teleport>
@@ -79,9 +79,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import { v4 as uuidv4 } from 'uuid'
 import { getContextHeight } from '@/utils/index.ts'
 import { useRouter } from 'vue-router'
-import { DataSource, DataSourceGroup } from '@/store/type'
+import { DataSource, DataSourceGroup, Report, ReportGroup } from '@/store/type'
 import controller from './hooks'
 import { ElMessageBox } from 'element-plus'
 import ChildDialog from './Child.vue'
@@ -103,9 +105,9 @@ export default defineComponent({
     const refMenu = ref()
 
     const state = reactive<{
-      currentGroup: DataSourceGroup | undefined
+      currentGroup: DataSourceGroup | ReportGroup | undefined
       currentGroupIndex: number
-      currentChild: DataSource | undefined
+      currentChild: DataSource | Report | undefined
       currentChildIndex: number
       searchText: string
       groupOpen: { [key: string]: boolean }
@@ -195,12 +197,14 @@ export default defineComponent({
         inputValue: state.currentGroup?.groupName,
         inputPattern: /^.+$/,
         inputErrorMessage: '分组名称不能为空'
-      }).then(({ value }) => {
-        let cloneObj: DataSourceGroup = {}
-        Object.assign(cloneObj, state.currentGroup)
-        cloneObj.groupName = value
-        update(cloneObj, state.currentGroupIndex)
       })
+        .then(({ value }) => {
+          let cloneObj = {}
+          Object.assign(cloneObj, state.currentGroup)
+          cloneObj.groupName = value
+          update(cloneObj, state.currentGroupIndex)
+        })
+        .catch(() => {})
     }
     const handleRemoveGroup = () => {
       ElMessageBox.confirm(`确定要删除分组[ ${state.currentGroup?.groupName} ]吗?`, '提示', {
@@ -213,7 +217,7 @@ export default defineComponent({
     }
 
     const handleRemoveChild = () => {
-      ElMessageBox.confirm(`确定要删除数据源[ ${state.currentChild?.name} ]吗?`, '提示', {
+      ElMessageBox.confirm(`确定要删除[ ${state.currentChild[keys.name]} ]吗?`, '提示', {
         confirmButtonText: '确 定',
         cancelButtonText: '取 消',
         type: 'warning'
@@ -248,8 +252,29 @@ export default defineComponent({
     }
 
     // children相关
+    const store = useStore()
     const handleAddChild = () => {
-      refChildDialog.value.open(state.currentGroup, state.currentGroupIndex)
+      if (props.groupType === 'reportGroup') {
+        ElMessageBox.prompt('请输入名称', '添加新报表', {
+          confirmButtonText: '确 定',
+          cancelButtonText: '取 消',
+          inputPattern: /^.+$/,
+          inputErrorMessage: '报表名称不能为空'
+        })
+          .then(({ value }) => {
+            const data = { reportId: uuidv4(), reportName: value, groupId: state.currentGroup?.groupId, seq: 0 }
+            keys.apiInstance.createReport(data).then(resp => {
+              if (resp.success) {
+                store.dispatch('reportGroup/createChild', { data, groupIndex: state.currentGroupIndex })
+              } else {
+                ElMessage.error(resp.message)
+              }
+            })
+          })
+          .catch(() => {})
+      } else {
+        refChildDialog.value.open(state.currentGroup, state.currentGroupIndex)
+      }
     }
 
     const router = useRouter()

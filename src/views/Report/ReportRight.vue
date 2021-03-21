@@ -3,23 +3,26 @@
   <div class="split">
     <div class="line"></div>
   </div>
-  <el-tabs tab-position="bottom" type="card" class="tab">
-    <el-tab-pane label="报表" class="pane" :style="`height: ${paneHeight}`">报表属性</el-tab-pane>
-    <el-tab-pane label="单元格" class="pane" :style="`height: ${paneHeight}`">单元格属性</el-tab-pane>
+  <el-tabs v-model="state.activeCard" tab-position="bottom" type="card" class="tab">
+    <el-tab-pane label="数据" class="pane" :style="`height: ${paneHeight}`">数据源</el-tab-pane>
+    <el-tab-pane label="格" class="pane" :style="`height: ${paneHeight}`">单元格属性</el-tab-pane>
     <el-tab-pane label="行" class="pane" :style="`height: ${paneHeight}`">行属性</el-tab-pane>
     <el-tab-pane label="列" class="pane" :style="`height: ${paneHeight}`">列属性</el-tab-pane>
+    <el-tab-pane label="表" class="pane" :style="`height: ${paneHeight}`">报表属性</el-tab-pane>
   </el-tabs>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, reactive } from 'vue'
 import { getContextHeight } from '@/utils/index'
 export default defineComponent({
   setup() {
     const paneHeight = computed(() => {
       return `${getContextHeight() - 35 - 47}px`
     })
-    return { paneHeight }
+    const state = reactive<{ activeCard: string }>({ activeCard: '0' })
+
+    return { paneHeight, state }
   }
 })
 </script>

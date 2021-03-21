@@ -3,7 +3,8 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { v4 as uuidv4 } from 'uuid'
 import { dsApi } from '@/api/modules/ds'
-import { DataSource, DataSourceGroup } from '@/store/type'
+import { reportApi } from '@/api/modules/report'
+import { DataSourceGroup, ReportGroup } from '@/store/type'
 import { ElMessage } from 'element-plus'
 
 export type GroupType = 'dataSourceGroup' | 'reportGroup'
@@ -15,19 +16,45 @@ const keysMap = {
     name: 'name',
     searchPlaceHolder: '搜索数据源...',
 
+    addChildMenu: '添加新数据源',
+    removeGroupMenu: '删除数据源',
+
     routeBase: '/main/ds',
 
-    apiInstance: dsApi
+    apiInstance: dsApi,
+
+    createEntity: (name = '', id: string, seq: number): any => {
+      const data: DataSourceGroup = {
+        groupId: id,
+        groupName: name,
+        seq,
+        dataSources: []
+      }
+      return data
+    }
   },
   reportGroup: {
     children: 'reports',
     id: 'reportId',
-    name: 'name',
+    name: 'reportName',
     searchPlaceHolder: '搜索报表...',
+
+    addChildMenu: '添加新报表',
+    removeGroupMenu: '删除报表',
 
     routeBase: '/main/report',
 
-    apiInstance: dsApi
+    apiInstance: reportApi,
+
+    createEntity: (name = '', id: string, seq: number): any => {
+      const data: ReportGroup = {
+        groupId: id,
+        groupName: name,
+        seq,
+        reports: []
+      }
+      return data
+    }
   }
 }
 
@@ -44,18 +71,8 @@ export default function controller(type: GroupType) {
     return store.state[type].size
   })
 
-  const createEntity = (name = '', id: string): DataSourceGroup => {
-    const data: DataSourceGroup = {
-      groupId: id,
-      groupName: name,
-      seq: size.value === 0 ? 0 : list.value[size.value - 1].seq + 1,
-      dataSources: []
-    }
-    return data
-  }
-
   const create = (name: string) => {
-    const data = createEntity(name, uuidv4())
+    const data = keys.createEntity(name, uuidv4(), size.value === 0 ? 0 : list.value[size.value - 1].seq + 1)
     keysMap[type].apiInstance.createGroup(data).then(resp => {
       if (resp.success) {
         store.dispatch(`${type}/create`, data)
@@ -64,7 +81,7 @@ export default function controller(type: GroupType) {
       }
     })
   }
-  const update = (db: DataSourceGroup, index: number) => {
+  const update = (db: any, index: number) => {
     keysMap[type].apiInstance.updateGroup(db).then(resp => {
       if (resp.success) {
         store.dispatch(`${type}/update`, { db, index })
@@ -98,8 +115,8 @@ export default function controller(type: GroupType) {
     })
   }
 
-  const removeChild = (child: DataSource, index: number) => {
-    keysMap[type].apiInstance.removeChild(child.dataSourceId).then(resp => {
+  const removeChild = (child: any, index: number) => {
+    keysMap[type].apiInstance.removeChild(child).then(resp => {
       if (resp.success) {
         store.dispatch(`${type}/removeChild`, { index, child })
         router.push({ path: keysMap[type].routeBase })

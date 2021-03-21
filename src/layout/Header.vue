@@ -11,7 +11,7 @@
     </el-col>
     <el-col :span="4">
       <el-menu text-color="#409eff" active-text-color="#409eff" mode="horizontal" router>
-        <el-menu-item index="/main/design" class="menu"> 设计 </el-menu-item>
+        <el-menu-item index="/main/report" class="menu"> 报表 </el-menu-item>
         <el-menu-item index="/main/ds" class="menu"> 数据源 </el-menu-item>
       </el-menu>
     </el-col>

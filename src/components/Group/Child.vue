@@ -79,7 +79,7 @@ export default defineComponent({
           const data = _createEntity(state.form.name, uuidv4(), state.form.db, state.group?.groupId)
           dsApi.createDs(data).then(resp => {
             if (resp.success) {
-              store.dispatch('dataSourceGroup/createDataSource', { data, groupIndex: state.groupIndex })
+              store.dispatch('dataSourceGroup/createChild', { data, groupIndex: state.groupIndex })
               state.dialogVisible = false
             } else {
               ElMessage.error(resp.message)
