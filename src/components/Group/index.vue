@@ -255,7 +255,7 @@ export default defineComponent({
     const store = useStore()
     const handleAddChild = () => {
       if (props.groupType === 'reportGroup') {
-        ElMessageBox.prompt('请输入名称', '添加新报表', {
+        ElMessageBox.prompt('', '添加新报表', {
           confirmButtonText: '确 定',
           cancelButtonText: '取 消',
           inputPattern: /^.+$/,

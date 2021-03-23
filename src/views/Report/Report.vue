@@ -53,16 +53,24 @@
   </Splitpanes>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, computed } from 'vue'
+import { defineComponent, reactive, computed, onMounted } from 'vue'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 import { num2col, getContextHeight } from '@/utils/index.ts'
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
-import ReportBottom from './ReportBottom.vue'
-import ReportRight from './ReportRight.vue'
+import ReportBottom from './Bottom/index.vue'
+import ReportRight from './Right/index.vue'
 import reportControl, { RowData } from './report.ts'
+import { reportApi } from '@/api/modules/report'
+
 export default defineComponent({
   components: { ReportBottom, ReportRight, Splitpanes, Pane },
   setup() {
+    const store = useStore()
+    const route = useRoute()
+
+    // 计算各个区域高度
     const bottomAreaHeight = 170
     const editAreaHeight = computed(() => {
       return `${getContextHeight()}px`
@@ -70,6 +78,7 @@ export default defineComponent({
     const tableHeight = computed(() => {
       return `${getContextHeight() - bottomAreaHeight}px`
     })
+
     // 初始table的行数列数
     const status = reactive<{
       data: RowData[]
@@ -81,12 +90,39 @@ export default defineComponent({
       rows: 6
     })
 
-    for (let r = 1; r <= status.rows; r++) {
-      const rowData: RowData = {}
-      for (let c = 1; c <= status.cols; c++) {
-        rowData[num2col(c)] = ''
+    const initTable = () => {
+      // 清空变量
+      status.data = []
+      status.cols = 10
+      status.rows = 6
+
+      // 初始化空表格
+      for (let r = 1; r <= status.rows; r++) {
+        const rowData: RowData = {}
+        for (let c = 1; c <= status.cols; c++) {
+          rowData[num2col(c)] = ''
+        }
+        status.data.push(rowData)
       }
-      status.data.push(rowData)
+
+      //初始化控制类
+      initControl(status.data)
+    }
+
+    // 获取报表
+    onMounted(() => {
+      initTable()
+      getReport(route.params.id)
+    })
+    onBeforeRouteUpdate(to => {
+      initTable()
+      getReport(to.params.id)
+    })
+
+    const getReport = reportId => {
+      reportApi.getReport(reportId).then(resp => {
+        store.dispatch('report/setCurrent', resp.data)
+      })
     }
 
     const {
@@ -98,8 +134,9 @@ export default defineComponent({
       rowStyle,
       setCurrentCell,
       drop,
-      cellInput
-    } = reportControl(status.data)
+      cellInput,
+      initControl
+    } = reportControl()
 
     return {
       num2col,

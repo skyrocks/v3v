@@ -44,3 +44,7 @@ export function listSore(list: any[], originIndex: number, targetIndex: number) 
     }
   }
 }
+
+export function cloneObject(obj: any) {
+  return JSON.parse(JSON.stringify(obj))
+}

@@ -4,13 +4,11 @@ import { listSore } from '@/utils/index'
 interface StateType {
   list: ReportGroup[] //全部entity列表
   size: number //列表大小
-  existsNew: boolean //当前是否处于新建状态
 }
 
 const state = (): StateType => ({
   list: [],
-  size: 0,
-  existsNew: false
+  size: 0
 })
 
 const actions = {

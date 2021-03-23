@@ -5,6 +5,7 @@ import Database from './modules/database'
 import DataSourceGroup from './modules/dataSourceGroup'
 import DataSource from './modules/dataSource'
 import ReportGroup from './modules/reportGroup'
+import Report from './modules/report'
 
 export default createStore({
   modules: {
@@ -12,7 +13,8 @@ export default createStore({
     ...Database,
     ...DataSourceGroup,
     ...DataSource,
-    ...ReportGroup
+    ...ReportGroup,
+    ...Report
   },
   getters
 })

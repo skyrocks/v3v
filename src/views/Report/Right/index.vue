@@ -1,10 +1,15 @@
 <template>
-  <div class="name">报表名称</div>
+  <div class="name">
+    {{ reportName }}
+    <span class="edit" @click="handleEditName"><i class="el-icon-edit"></i></span>
+  </div>
   <div class="split">
     <div class="line"></div>
   </div>
   <el-tabs v-model="state.activeCard" tab-position="bottom" type="card" class="tab">
-    <el-tab-pane label="数据" class="pane" :style="`height: ${paneHeight}`">数据源</el-tab-pane>
+    <el-tab-pane label="数据" class="pane" :style="`height: ${paneHeight}`">
+      <DS></DS>
+    </el-tab-pane>
     <el-tab-pane label="格" class="pane" :style="`height: ${paneHeight}`">单元格属性</el-tab-pane>
     <el-tab-pane label="行" class="pane" :style="`height: ${paneHeight}`">行属性</el-tab-pane>
     <el-tab-pane label="列" class="pane" :style="`height: ${paneHeight}`">列属性</el-tab-pane>
@@ -15,14 +20,50 @@
 <script lang="ts">
 import { computed, defineComponent, reactive } from 'vue'
 import { getContextHeight } from '@/utils/index'
+import { useStore } from 'vuex'
+import DS from './DataSource.vue'
+import { ElMessageBox } from 'element-plus'
+import { reportApi } from '@/api/modules/report'
+
 export default defineComponent({
+  components: { DS },
   setup() {
+    const store = useStore()
+
     const paneHeight = computed(() => {
       return `${getContextHeight() - 35 - 47}px`
     })
     const state = reactive<{ activeCard: string }>({ activeCard: '0' })
 
-    return { paneHeight, state }
+    const reportName = computed(() => {
+      if (store.state.report.current) {
+        return store.state.report.current.reportName
+      } else {
+        return ''
+      }
+    })
+
+    const handleEditName = () => {
+      ElMessageBox.prompt('', '修改报表名称', {
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
+        inputPattern: /^.+$/,
+        inputErrorMessage: '报表名称不能为空'
+      })
+        .then(({ value }) => {
+          const data = { reportId: store.state.report.current.reportId, reportName: value }
+          reportApi.updateReportName(data).then(resp => {
+            if (resp.success) {
+              store.state.report.current.reportName = value
+            } else {
+              ElMessage.error(resp.message)
+            }
+          })
+        })
+        .catch(() => {})
+    }
+
+    return { paneHeight, state, reportName, handleEditName }
   }
 })
 </script>
@@ -36,6 +77,10 @@ export default defineComponent({
   box-sizing: border-box;
   font-size: $--size-font-larger;
   font-weight: bold;
+  .edit {
+    margin-left: 10px;
+    cursor: pointer;
+  }
 }
 .split {
   background-color: $--color-bg-enabled;
@@ -48,7 +93,6 @@ export default defineComponent({
 
 .pane {
   background-color: $--color-bg-enabled;
-  padding: 15px;
 }
 ::v-deep(.el-tabs__item) {
   color: $--color-text-base;

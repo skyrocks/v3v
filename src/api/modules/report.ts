@@ -18,11 +18,24 @@ class ReportApi extends Abstract {
     return this.post({ url: '/report/groups/sort', data })
   }
 
+  getReport(reportId: string) {
+    return this.get({ url: `/reports/${reportId}` })
+  }
   createReport(data: Report) {
     return this.post({ url: '/reports/create', data })
   }
   removeChild(child: Report) {
     return this.post({ url: '/reports/delete', data: child })
+  }
+  updateReportName(data: Report) {
+    return this.post({ url: '/reports/update/name', data })
+  }
+
+  getReportDs(reportId: string) {
+    return this.get({ url: `/reports/ds/${reportId}` })
+  }
+  updateReportDs(reportId: string, dataSourceId: string) {
+    return this.post({ url: '/reports/update/ds', data: { reportId, dataSourceId } })
   }
 }
 
