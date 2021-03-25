@@ -64,7 +64,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, computed, watch } from 'vue'
 import { useStore } from 'vuex'
-import { onBeforeRouteUpdate } from 'vue-router'
 import { DataSource } from '@/store/type'
 import { getContextHeight, cloneObject } from '@/utils/index'
 import { Splitpanes, Pane } from 'splitpanes'

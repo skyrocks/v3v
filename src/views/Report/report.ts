@@ -1,7 +1,6 @@
-import { Ref, UnwrapRef, ComputedRef, computed, reactive, toRefs, ref, onUnmounted } from 'vue'
+import { UnwrapRef, ComputedRef, computed, reactive, ref, onUnmounted } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
-import { num2col } from '@/utils/index'
-
+import formulaHook from './Bottom/formula'
 // 定义单元格数据结构
 export interface RowData {
   [key: string]: string
@@ -11,30 +10,25 @@ export interface RowData {
 interface CurrentCell {
   rowIndex: number
   colIndex: number
-  data: string
 }
 
 // 定义导出类型
 interface Result {
   cssVars: ComputedRef<{ [key: string]: string }>
-  currentCellName: ComputedRef<string>
-  currentCellData: Ref<string>
+  currentCell: UnwrapRef<CurrentCell>
   getCellClass: (colIndex: number, rowIndex: number) => string
   headerCellStyle: (cell: { columnIndex: number }) => string
   rowStyle: (row: { rowIndex: number }) => string
-  setCurrentCell: (cellIndex: number, rowIndex: number, cellData: string) => void
+  setCurrentCell: (cellIndex: number | undefined, rowIndex: number | undefined) => void
   drop: ($event: any, row: RowData, columnProperty: string, colIndex: number, rowIndex: number) => void
-  cellInput: () => void
-  initControl: (inputData: UnwrapRef<RowData[]>) => void
+  initControl: () => void
 }
 
 export default function reportControl(): Result {
   // 初始化当前单元格
-  let _inputData: UnwrapRef<RowData[]>
-  const _currentCell = reactive<CurrentCell>({
+  const currentCell = reactive<CurrentCell>({
     rowIndex: -1,
-    colIndex: -1,
-    data: ''
+    colIndex: -1
   })
 
   const _selectColumnNumStr = ref('')
@@ -49,14 +43,8 @@ export default function reportControl(): Result {
     }
   })
 
-  const currentCellName = computed(() => {
-    return _currentCell.rowIndex !== -1 && _currentCell.colIndex !== -1
-      ? `${num2col(_currentCell.colIndex)}${_currentCell.rowIndex}`
-      : ''
-  })
-
   const getCellClass = (colIndex: number, rowIndex: number) => {
-    return rowIndex === _currentCell.rowIndex && colIndex === _currentCell.colIndex ? 'cell-focus' : 'cell-blur'
+    return rowIndex === currentCell.rowIndex && colIndex === currentCell.colIndex ? 'cell-focus' : 'cell-blur'
   }
 
   const headerCellStyle = (cell: { columnIndex: number }) => {
@@ -67,29 +55,31 @@ export default function reportControl(): Result {
         ? `background-color: ${_cellBgColor}`
         : ''
     } else {
-      return cell.columnIndex === _currentCell.colIndex ? `background-color: ${_cellBgColor}` : ''
+      return cell.columnIndex === currentCell.colIndex ? `background-color: ${_cellBgColor}` : ''
     }
   }
 
   const rowStyle = (row: { rowIndex: number }) => {
-    return row.rowIndex + 1 === _currentCell.rowIndex ? `background-color: ${_cellBgColor}` : ''
+    return row.rowIndex + 1 === currentCell.rowIndex ? `background-color: ${_cellBgColor}` : ''
   }
 
-  const setCurrentCell = (cellIndex = -1, rowIndex = -1, cellData = '') => {
-    _currentCell.colIndex = cellIndex
-    _currentCell.rowIndex = rowIndex
-    _currentCell.data = cellData
+  const setCurrentCell = (cellIndex: number | undefined, rowIndex: number | undefined) => {
+    if (cellIndex) {
+      currentCell.colIndex = cellIndex
+    }
+    if (rowIndex) {
+      currentCell.rowIndex = rowIndex
+    }
   }
 
+  const formula = formulaHook()
   const drop = ($event: any, row: RowData, columnProperty: string, colIndex: number, rowIndex: number) => {
+    setCurrentCell(colIndex, rowIndex + 1)
     const data = JSON.parse($event.dataTransfer.getData('field'))
-    row[columnProperty] = data.fieldKey
-    setCurrentCell(colIndex, rowIndex + 1, data.fieldKey)
-    $event.target.style.borderColor = ''
-  }
+    const formulaData = formula.getFormulaData(data.fieldKey) //默认导航格向下搜寻
+    row[columnProperty] = formulaData
 
-  const cellInput = () => {
-    _inputData[_currentCell.rowIndex - 1][num2col(_currentCell.colIndex)] = _currentCell.data
+    $event.target.style.borderColor = ''
   }
 
   const selectColumn = (num: (number | undefined)[]) => {
@@ -97,11 +87,9 @@ export default function reportControl(): Result {
   }
 
   let _mp: any
-  const initControl = (inputData: UnwrapRef<RowData[]>) => {
-    _inputData = inputData
-    _currentCell.colIndex = -1
-    _currentCell.rowIndex = -1
-    _currentCell.data = ''
+  const initControl = () => {
+    currentCell.colIndex = -1
+    currentCell.rowIndex = -1
     _selectColumnNumStr.value = ''
 
     _mp = mousePosition()
@@ -115,17 +103,15 @@ export default function reportControl(): Result {
     _mp.removeEventListener()
   })
 
-  const currentCellData: Ref<string> = { ...toRefs(_currentCell) }.data
+  // const currentCellData: Ref<string> = { ...toRefs(currentCell) }.data
   return {
     cssVars,
-    currentCellName,
-    currentCellData,
+    currentCell,
     getCellClass,
     headerCellStyle,
     rowStyle,
     setCurrentCell,
     drop,
-    cellInput,
     initControl
   }
 }

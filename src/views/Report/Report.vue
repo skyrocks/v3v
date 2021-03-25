@@ -11,10 +11,10 @@
       </div>
       <el-row>
         <el-col :span="4">
-          <el-input v-model="currentCellName" readonly class="cell-name" />
+          <el-input v-model="formulaName" readonly class="cell-name" />
         </el-col>
         <el-col :span="20">
-          <el-input v-model="currentCellData" @input="cellInput" />
+          <el-input v-model="formulaData" />
         </el-col>
       </el-row>
       <el-table
@@ -33,8 +33,8 @@
             <el-input
               v-model="row[column.property]"
               :class="getCellClass(c, $index + 1)"
-              @input="setCurrentCell(c, $index + 1, row[column.property])"
-              @focus="setCurrentCell(c, $index + 1, row[column.property])"
+              @input="setCurrentCell(c, $index + 1)"
+              @focus="setCurrentCell(c, $index + 1)"
               @dragover="$event.preventDefault()"
               @dragenter="$event.target.style.borderColor = cellBorderColor"
               @dragleave="$event.target.style.borderColor = ''"
@@ -43,7 +43,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <ReportBottom :style="`height: ${bottomAreaHeight}px`">
+      <ReportBottom ref="refBottom" :style="`height: ${bottomAreaHeight}px`" @changeTypeDirec="handleBottomChange">
         <p>{{ status.data }} </p>
       </ReportBottom>
     </Pane>
@@ -53,7 +53,7 @@
   </Splitpanes>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, computed, onMounted } from 'vue'
+import { defineComponent, reactive, computed, onMounted, watch, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { num2col, getContextHeight } from '@/utils/index.ts'
@@ -63,12 +63,15 @@ import ReportBottom from './Bottom/index.vue'
 import ReportRight from './Right/index.vue'
 import reportControl, { RowData } from './report.ts'
 import { reportApi } from '@/api/modules/report'
+import formulaHook from './Bottom/formula'
 
 export default defineComponent({
   components: { ReportBottom, ReportRight, Splitpanes, Pane },
   setup() {
     const store = useStore()
     const route = useRoute()
+
+    const refBottom = ref()
 
     // 计算各个区域高度
     const bottomAreaHeight = 170
@@ -79,6 +82,17 @@ export default defineComponent({
       return `${getContextHeight() - bottomAreaHeight}px`
     })
 
+    const {
+      cssVars,
+      currentCell,
+      getCellClass,
+      headerCellStyle,
+      rowStyle,
+      setCurrentCell,
+      drop,
+      initControl
+    } = reportControl()
+
     // 初始table的行数列数
     const status = reactive<{
       data: RowData[]
@@ -88,6 +102,28 @@ export default defineComponent({
       data: [],
       cols: 10,
       rows: 6
+    })
+
+    const formulaName = computed(() =>
+      currentCell.rowIndex !== -1 && currentCell.colIndex !== -1
+        ? `${num2col(currentCell.colIndex)}${currentCell.rowIndex}`
+        : ''
+    )
+    const formulaData = computed({
+      get: () => {
+        if (currentCell.rowIndex === -1 || currentCell.colIndex === -1) {
+          return ''
+        } else {
+          return status.data[currentCell.rowIndex - 1][num2col(currentCell.colIndex)]
+        }
+      },
+      set: val => {
+        status.data[currentCell.rowIndex - 1][num2col(currentCell.colIndex)] = val
+      }
+    })
+
+    watch(formulaData, newVal => {
+      refBottom.value.parseFormula(newVal)
     })
 
     const initTable = () => {
@@ -106,7 +142,7 @@ export default defineComponent({
       }
 
       //初始化控制类
-      initControl(status.data)
+      initControl()
     }
 
     // 获取报表
@@ -125,35 +161,37 @@ export default defineComponent({
       })
     }
 
-    const {
-      cssVars,
-      currentCellName,
-      currentCellData,
-      getCellClass,
-      headerCellStyle,
-      rowStyle,
-      setCurrentCell,
-      drop,
-      cellInput,
-      initControl
-    } = reportControl()
+    const formula = formulaHook()
+    const handleBottomChange = formulaTypeDir => {
+      if (currentCell.rowIndex !== -1 && currentCell.colIndex !== -1) {
+        const originData = formula.getOriginData(status.data[currentCell.rowIndex - 1][num2col(currentCell.colIndex)])
+        status.data[currentCell.rowIndex - 1][num2col(currentCell.colIndex)] = formula.getFormulaData(
+          originData,
+          formulaTypeDir.type,
+          formulaTypeDir.direction
+        )
+      }
+    }
 
     return {
+      refBottom,
       num2col,
       editAreaHeight,
       tableHeight,
       bottomAreaHeight,
       status,
+      formulaName,
+      formulaData,
 
       cssVars,
-      currentCellName,
-      currentCellData,
+      currentCell,
       getCellClass,
       headerCellStyle,
       rowStyle,
       setCurrentCell,
       drop,
-      cellInput
+
+      handleBottomChange
     }
   }
 })
