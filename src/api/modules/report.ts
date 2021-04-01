@@ -37,6 +37,9 @@ class ReportApi extends Abstract {
   updateReportDs(reportId: string, dataSourceId: string) {
     return this.post({ url: '/reports/update/ds', data: { reportId, dataSourceId } })
   }
+  saveReportBody(reportId: string, content: string) {
+    return this.post({ url: '/reports/update/content', data: { reportId, content } })
+  }
 }
 
 // 单列模式返回对象

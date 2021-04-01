@@ -2,7 +2,7 @@
   <Splitpanes class="default-theme" :style="`height: ${editAreaHeight}`">
     <Pane size="75">
       <div class="tbar">
-        <el-button icon="el-icon-goods">保存</el-button>
+        <el-button icon="el-icon-goods" @click="handleSave">保存</el-button>
         <el-button icon="el-icon-eleme">预览</el-button>
         <el-divider direction="vertical"></el-divider>
         <el-button icon="el-icon-edit"></el-button>
@@ -43,8 +43,8 @@
           </template>
         </el-table-column>
       </el-table>
+      <p>{{ status.data }} </p>
       <ReportBottom ref="refBottom" :style="`height: ${bottomAreaHeight}px`" @changeTypeDirec="handleBottomChange">
-        <p>{{ status.data }} </p>
       </ReportBottom>
     </Pane>
     <Pane>
@@ -64,6 +64,7 @@ import ReportRight from './Right/index.vue'
 import reportControl, { RowData } from './report.ts'
 import { reportApi } from '@/api/modules/report'
 import formulaHook from './Bottom/formula'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   components: { ReportBottom, ReportRight, Splitpanes, Pane },
@@ -95,10 +96,12 @@ export default defineComponent({
 
     // 初始table的行数列数
     const status = reactive<{
+      reportId: string
       data: RowData[]
       cols: number
       rows: number
     }>({
+      reportId: '',
       data: [],
       cols: 10,
       rows: 6
@@ -126,39 +129,54 @@ export default defineComponent({
       refBottom.value.parseFormula(newVal)
     })
 
-    const initTable = () => {
+    const initTable = (cols = 10, rows = 6, body = {}) => {
       // 清空变量
       status.data = []
-      status.cols = 10
-      status.rows = 6
+      status.cols = cols
+      status.rows = rows
 
       // 初始化空表格
       for (let r = 1; r <= status.rows; r++) {
         const rowData: RowData = {}
         for (let c = 1; c <= status.cols; c++) {
-          rowData[num2col(c)] = ''
+          const colLetter = num2col(c)
+          const key = `${colLetter}${r}`
+          if (body[key]) {
+            rowData[colLetter] = body[key]
+          } else {
+            rowData[colLetter] = ''
+          }
         }
         status.data.push(rowData)
       }
-
-      //初始化控制类
-      initControl()
     }
 
     // 获取报表
     onMounted(() => {
-      initTable()
+      status.reportId = route.params.id
       getReport(route.params.id)
     })
     onBeforeRouteUpdate(to => {
-      initTable()
+      status.reportId = to.params.id
       getReport(to.params.id)
     })
 
     const getReport = reportId => {
       reportApi.getReport(reportId).then(resp => {
         store.dispatch('report/setCurrent', resp.data)
+        parseContent(resp.data.content)
       })
+    }
+
+    const parseContent = content => {
+      if (content) {
+        const table = JSON.parse(content)
+        initTable(table.table.colNum, table.table.rowNum, table.body)
+      } else {
+        initTable()
+      }
+      //初始化控制类
+      initControl()
     }
 
     const formula = formulaHook()
@@ -171,6 +189,28 @@ export default defineComponent({
           formulaTypeDir.direction
         )
       }
+    }
+
+    const handleSave = () => {
+      const data = { condition: {}, table: { colNum: status.cols, rowNum: status.rows }, body: {} }
+      status.data.forEach((row, index) => {
+        for (const col in row) {
+          if (row[col] != '') {
+            const key = `${col}${index + 1}`
+            data.body[key] = row[col]
+          }
+        }
+      })
+      reportApi.saveReportBody(status.reportId, JSON.stringify(data)).then(resp => {
+        if (resp.success) {
+          ElMessage.success({
+            message: '报表已经保存',
+            type: 'success'
+          })
+        } else {
+          ElMessage.error(resp.message)
+        }
+      })
     }
 
     return {
@@ -191,7 +231,9 @@ export default defineComponent({
       setCurrentCell,
       drop,
 
-      handleBottomChange
+      handleBottomChange,
+
+      handleSave
     }
   }
 })

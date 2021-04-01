@@ -103,7 +103,6 @@ export default function reportControl(): Result {
     _mp.removeEventListener()
   })
 
-  // const currentCellData: Ref<string> = { ...toRefs(currentCell) }.data
   return {
     cssVars,
     currentCell,
