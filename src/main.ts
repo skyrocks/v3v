@@ -37,7 +37,11 @@ import {
   ElCard,
   ElTooltip,
   ElAlert,
-  ElDialog
+  ElDialog,
+  ElDropdown,
+  ElDropdownMenu,
+  ElDropdownItem,
+  ElColorPicker
 } from 'element-plus'
 
 const components: any[] = [
@@ -70,7 +74,11 @@ const components: any[] = [
   ElCard,
   ElTooltip,
   ElAlert,
-  ElDialog
+  ElDialog,
+  ElDropdown,
+  ElDropdownMenu,
+  ElDropdownItem,
+  ElColorPicker
 ]
 
 const plugins: any = [ElLoading, ElMessage, ElMessageBox, ElNotification]

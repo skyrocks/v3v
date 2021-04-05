@@ -40,6 +40,10 @@ class ReportApi extends Abstract {
   saveReportBody(reportId: string, content: string) {
     return this.post({ url: '/reports/update/content', data: { reportId, content } })
   }
+
+  show(reportId: string) {
+    return this.get({ url: `/reports/show/${reportId}` })
+  }
 }
 
 // 单列模式返回对象

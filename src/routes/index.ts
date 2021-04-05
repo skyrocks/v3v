@@ -37,17 +37,6 @@ const routes: any[] = [
           }
         ]
       },
-      // {
-      //   path: 'show',
-      //   name: 'show',
-      //   component: () => import('@/views/Show/index.vue'),
-      //   children: [
-      //     {
-      //       path: ':id',
-      //       component: () => import('@/views/Show/Report.vue')
-      //     }
-      //   ]
-      // },
       {
         path: 'ds',
         name: 'ds',
@@ -71,6 +60,11 @@ const routes: any[] = [
         ]
       }
     ]
+  },
+  {
+    path: '/show/:id',
+    name: 'show',
+    component: () => import('@/views/Show/index.vue')
   }
 ]
 

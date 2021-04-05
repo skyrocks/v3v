@@ -2,12 +2,80 @@
   <Splitpanes class="default-theme" :style="`height: ${editAreaHeight}`">
     <Pane size="75">
       <div class="tbar">
-        <el-button icon="el-icon-goods" @click="handleSave">保存</el-button>
-        <el-button icon="el-icon-eleme">预览</el-button>
+        <el-button-group>
+          <el-button icon="el-icon-goods" @click="handleSave">保存</el-button>
+          <el-button icon="el-icon-eleme">预览</el-button>
+        </el-button-group>
         <el-divider direction="vertical"></el-divider>
-        <el-button icon="el-icon-edit"></el-button>
-        <el-button icon="el-icon-share"></el-button>
-        <el-button icon="el-icon-delete"></el-button>
+        <el-select v-model="status.font" style="width: 85px" size="mini">
+          <el-option label="宋体" value="宋体"></el-option>
+        </el-select>
+        <el-select v-model="status.fontSize" style="width: 65px" size="mini">
+          <el-option label="12" value="12"></el-option>
+        </el-select>
+        <el-divider direction="vertical"></el-divider>
+        <el-button-group>
+          <el-button>
+            <SvgIcon icon-class="alcuti" />
+          </el-button>
+          <el-button>
+            <SvgIcon icon-class="alitalic" />
+          </el-button>
+          <el-button>
+            <SvgIcon icon-class="alxiahuaxian" />
+          </el-button>
+        </el-button-group>
+        <el-divider direction="vertical"></el-divider>
+        <el-dropdown>
+          <el-button>
+            <SvgIcon icon-class="alborder-none" />
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item><SvgIcon icon-class="alborder-all" /></el-dropdown-item>
+              <el-dropdown-item><SvgIcon icon-class="alborder-top" /></el-dropdown-item>
+              <el-dropdown-item><SvgIcon icon-class="alborder-right" /></el-dropdown-item>
+              <el-dropdown-item><SvgIcon icon-class="alborder-bottom" /></el-dropdown-item>
+              <el-dropdown-item><SvgIcon icon-class="alborder-left" /></el-dropdown-item>
+              <el-dropdown-item><SvgIcon icon-class="alborder-none" /></el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <el-divider direction="vertical"></el-divider>
+        <el-button-group>
+          <div class="fill-color">
+            <el-color-picker
+              v-model="status.fillColor"
+              size="mini"
+              :predefine="status.predefineColors"
+            ></el-color-picker>
+          </div>
+          <div class="font-color">
+            <el-color-picker
+              v-model="status.fontColor"
+              size="mini"
+              :predefine="status.predefineColors"
+            ></el-color-picker>
+          </div>
+        </el-button-group>
+        <el-divider direction="vertical"></el-divider>
+        <el-button-group>
+          <el-button>
+            <SvgIcon icon-class="aljuzuo" />
+          </el-button>
+          <el-button>
+            <SvgIcon icon-class="aljuzhong" />
+          </el-button>
+          <el-button>
+            <SvgIcon icon-class="aljuyou" />
+          </el-button>
+        </el-button-group>
+        <el-divider direction="vertical"></el-divider>
+        <el-button-group>
+          <el-button>
+            <SvgIcon icon-class="alhebingcell" />
+          </el-button>
+        </el-button-group>
       </div>
       <el-row>
         <el-col :span="4">
@@ -96,11 +164,38 @@ export default defineComponent({
 
     // 初始table的行数列数
     const status = reactive<{
+      font: string
+      fontSize: string
+      fontColor: ''
+      fillColor: ''
+      predefineColors: any[]
+
       reportId: string
       data: RowData[]
       cols: number
       rows: number
     }>({
+      font: '宋体',
+      fontSize: '12',
+      fontColor: '#606266',
+      fillColor: '#ffffff',
+      predefineColors: [
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#c7158577'
+      ],
+
       reportId: '',
       data: [],
       cols: 10,
@@ -253,6 +348,27 @@ export default defineComponent({
     i {
       font-size: $--size-font-larger !important;
     }
+  }
+  .fill-color {
+    display: inline-block;
+    margin-right: 2px;
+    ::v-deep(.el-color-picker__trigger) {
+      .el-color-picker__icon::before {
+        content: '填';
+        color: $--color-text-base;
+      }
+    }
+  }
+  .font-color {
+    display: inline-block;
+    ::v-deep(.el-color-picker__trigger) {
+      .el-color-picker__icon::before {
+        content: '字';
+      }
+    }
+  }
+  ::v-deep(.el-color-picker__trigger) {
+    border: 0;
   }
 }
 ::v-deep(.cell-name input) {
